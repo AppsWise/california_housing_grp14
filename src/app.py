@@ -1,13 +1,19 @@
 import os
+import logging
 from flask import Flask, render_template, request
 import pickle
 import numpy as np
 
 app = Flask(__name__)
 
+# Configure logging
+logging.basicConfig(filename='/var/log/app.log', level=logging.INFO, 
+                    format='%(asctime)s %(levelname)s: %(message)s', 
+                    datefmt='%Y-%m-%d %H:%M:%S')
+
 # Construct the absolute path to the model file for robustness
 
-#TODO: model.pkl is a dummy file. It needs to be replaced with the correct thing.
+#TODO: model.pkl is a dummy file. It needs to be replaced with the correct thing.Add
 script_dir = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(script_dir, '..', 'artifacts', 'model.pkl')
 
@@ -25,6 +31,9 @@ def predict():
     input_features = [float(x) for x in request.form.values()]
     features_value = [np.array(input_features)]
     
+    # Log the input features
+    app.logger.info(f"Input features: {features_value}")
+
     # Make prediction
     prediction = model.predict(features_value)
     
