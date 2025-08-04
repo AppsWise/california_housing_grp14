@@ -1,4 +1,7 @@
+import sys
 import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
 import logging
 import json
 import time
@@ -364,7 +367,7 @@ def predict():
         if request.is_json:
             app.logger.info("Received JSON prediction request")
             input_data = request.get_json()
-            app.logger.info(f"JSON input data: {input_data}")
+
         else:
             # Try to get form data
             form = request.form
