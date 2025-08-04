@@ -64,6 +64,11 @@ jobs:
         pytest tests/ -v --tb=short || echo "Some tests failed, continuing..."
         echo "✅ Tests completed"
     
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
     - name: Validate Docker files
       run: |
         # Check if Dockerfile exists and is valid
