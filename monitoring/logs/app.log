@@ -1,0 +1,121 @@
+2025-08-04 11:12:21,216 - app - INFO - Model loaded successfully from /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:13:27,709 - app - INFO - Model loaded successfully from /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:13:27,711 - app - INFO - ==================================================
+2025-08-04 11:13:27,711 - app - INFO - California Housing Prediction API Starting...
+2025-08-04 11:13:27,711 - app - INFO - Model path: /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:13:27,711 - app - INFO - Model loaded: True
+2025-08-04 11:13:27,711 - app - INFO - Database initialized: True
+2025-08-04 11:13:27,711 - app - INFO - Logs directory: logs/
+2025-08-04 11:13:27,711 - app - INFO - ==================================================
+2025-08-04 11:13:54,978 - app - INFO - Model loaded successfully from /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:13:54,979 - app - INFO - ==================================================
+2025-08-04 11:13:54,979 - app - INFO - California Housing Prediction API Starting...
+2025-08-04 11:13:54,979 - app - INFO - Model path: /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:13:54,979 - app - INFO - Model loaded: True
+2025-08-04 11:13:54,979 - app - INFO - Database initialized: True
+2025-08-04 11:13:54,979 - app - INFO - Logs directory: logs/
+2025-08-04 11:13:54,979 - app - INFO - ==================================================
+2025-08-04 11:14:14,410 - app - INFO - Model loaded successfully from /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:14:14,411 - app - INFO - ==================================================
+2025-08-04 11:14:14,411 - app - INFO - California Housing Prediction API Starting...
+2025-08-04 11:14:14,411 - app - INFO - Model path: /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:14:14,411 - app - INFO - Model loaded: True
+2025-08-04 11:14:14,411 - app - INFO - Database initialized: True
+2025-08-04 11:14:14,411 - app - INFO - Logs directory: logs/
+2025-08-04 11:14:14,411 - app - INFO - ==================================================
+2025-08-04 11:14:32,565 - app - INFO - Prepared input features: ['longitude', 'latitude', 'housing_median_age', 'total_rooms', 'total_bedrooms', 'population', 'households', 'median_income', 'rooms_per_household', 'bedrooms_per_room', 'population_per_household', 'ocean_proximity']
+2025-08-04 11:14:32,573 - app - INFO - Health check completed: healthy
+2025-08-04 11:14:41,670 - app - INFO - Prepared input features: ['longitude', 'latitude', 'housing_median_age', 'total_rooms', 'total_bedrooms', 'population', 'households', 'median_income', 'rooms_per_household', 'bedrooms_per_room', 'population_per_household', 'ocean_proximity']
+2025-08-04 11:14:41,674 - app - INFO - Successful prediction: 371300.0 (processing time: 0.004s)
+2025-08-04 11:30:37,943 - app_enhanced - INFO - Model loaded successfully from /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:30:37,944 - app_enhanced - INFO - ==================================================
+2025-08-04 11:30:37,944 - app_enhanced - INFO - California Housing Prediction API Starting...
+2025-08-04 11:30:37,944 - app_enhanced - INFO - Model loaded: True
+2025-08-04 11:30:37,944 - app_enhanced - INFO - Database initialized: True
+2025-08-04 11:30:37,944 - app_enhanced - INFO - Retraining trigger initialized: True
+2025-08-04 11:30:37,944 - app_enhanced - INFO - Logs directory: logs/
+2025-08-04 11:30:37,944 - app_enhanced - INFO - ==================================================
+2025-08-04 11:31:26,383 - app_enhanced - INFO - Model loaded successfully from /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:31:26,384 - app_enhanced - INFO - ==================================================
+2025-08-04 11:31:26,384 - app_enhanced - INFO - California Housing Prediction API Starting...
+2025-08-04 11:31:26,385 - app_enhanced - INFO - Model loaded: True
+2025-08-04 11:31:26,385 - app_enhanced - INFO - Database initialized: True
+2025-08-04 11:31:26,385 - app_enhanced - INFO - Retraining trigger initialized: True
+2025-08-04 11:31:26,385 - app_enhanced - INFO - Logs directory: logs/
+2025-08-04 11:31:26,385 - app_enhanced - INFO - ==================================================
+2025-08-04 11:31:52,376 - app_enhanced - INFO - Model loaded successfully from /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:31:52,378 - app_enhanced - INFO - ==================================================
+2025-08-04 11:31:52,378 - app_enhanced - INFO - California Housing Prediction API Starting...
+2025-08-04 11:31:52,378 - app_enhanced - INFO - Model loaded: True
+2025-08-04 11:31:52,378 - app_enhanced - INFO - Database initialized: True
+2025-08-04 11:31:52,378 - app_enhanced - INFO - Retraining trigger initialized: True
+2025-08-04 11:31:52,378 - app_enhanced - INFO - Logs directory: logs/
+2025-08-04 11:31:52,378 - app_enhanced - INFO - ==================================================
+2025-08-04 11:32:05,495 - app_enhanced - INFO - Input validation successful with 0 warnings
+2025-08-04 11:32:05,501 - app_enhanced - INFO - Prepared input features: ['longitude', 'latitude', 'housing_median_age', 'total_rooms', 'total_bedrooms', 'population', 'households', 'median_income', 'rooms_per_household', 'bedrooms_per_room', 'population_per_household', 'ocean_proximity']
+2025-08-04 11:32:05,507 - app_enhanced - INFO - Successful prediction: 371300.0 (processing time: 0.009s)
+2025-08-04 11:32:31,728 - app_enhanced - ERROR - Prediction error: 1 validation error for ErrorResponse
+details
+  Input should be a valid dictionary [type=dict_type, input_value=[{'type': 'value_error', ...ev/2.10/v/value_error'}], input_type=list]
+    For further information visit https://errors.pydantic.dev/2.10/v/dict_type
+2025-08-04 11:32:31,730 - app_enhanced - ERROR - Traceback: Traceback (most recent call last):
+  File "/Volumes/Development/Development/assignment/MLOps_ASS1/src/api/app_enhanced.py", line 244, in predict
+    error_response = ErrorResponse(
+                     ^^^^^^^^^^^^^^
+  File "/Users/jeetendra/anaconda3/envs/BITSAIML/lib/python3.11/site-packages/pydantic/main.py", line 214, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ErrorResponse
+details
+  Input should be a valid dictionary [type=dict_type, input_value=[{'type': 'value_error', ...ev/2.10/v/value_error'}], input_type=list]
+    For further information visit https://errors.pydantic.dev/2.10/v/dict_type
+
+2025-08-04 11:32:43,518 - app_enhanced - ERROR - Prediction error: 1 validation error for ErrorResponse
+details
+  Input should be a valid dictionary [type=dict_type, input_value=[{'type': 'greater_than_e...antic.dev/2.10/v/enum'}], input_type=list]
+    For further information visit https://errors.pydantic.dev/2.10/v/dict_type
+2025-08-04 11:32:43,519 - app_enhanced - ERROR - Traceback: Traceback (most recent call last):
+  File "/Volumes/Development/Development/assignment/MLOps_ASS1/src/api/app_enhanced.py", line 244, in predict
+    error_response = ErrorResponse(
+                     ^^^^^^^^^^^^^^
+  File "/Users/jeetendra/anaconda3/envs/BITSAIML/lib/python3.11/site-packages/pydantic/main.py", line 214, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ErrorResponse
+details
+  Input should be a valid dictionary [type=dict_type, input_value=[{'type': 'greater_than_e...antic.dev/2.10/v/enum'}], input_type=list]
+    For further information visit https://errors.pydantic.dev/2.10/v/dict_type
+
+2025-08-04 11:33:02,528 - app_enhanced - ERROR - Prediction error: 1 validation error for ErrorResponse
+details
+  Input should be a valid dictionary [type=dict_type, input_value=[{'type': 'missing', 'loc...ic.dev/2.10/v/missing'}], input_type=list]
+    For further information visit https://errors.pydantic.dev/2.10/v/dict_type
+2025-08-04 11:33:02,529 - app_enhanced - ERROR - Traceback: Traceback (most recent call last):
+  File "/Volumes/Development/Development/assignment/MLOps_ASS1/src/api/app_enhanced.py", line 244, in predict
+    error_response = ErrorResponse(
+                     ^^^^^^^^^^^^^^
+  File "/Users/jeetendra/anaconda3/envs/BITSAIML/lib/python3.11/site-packages/pydantic/main.py", line 214, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ErrorResponse
+details
+  Input should be a valid dictionary [type=dict_type, input_value=[{'type': 'missing', 'loc...ic.dev/2.10/v/missing'}], input_type=list]
+    For further information visit https://errors.pydantic.dev/2.10/v/dict_type
+
+2025-08-04 11:34:39,587 - app_enhanced - INFO - Model loaded successfully from /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:34:39,589 - app_enhanced - INFO - ==================================================
+2025-08-04 11:34:39,589 - app_enhanced - INFO - California Housing Prediction API Starting...
+2025-08-04 11:34:39,589 - app_enhanced - INFO - Model loaded: True
+2025-08-04 11:34:39,589 - app_enhanced - INFO - Database initialized: True
+2025-08-04 11:34:39,589 - app_enhanced - INFO - Retraining trigger initialized: True
+2025-08-04 11:34:39,589 - app_enhanced - INFO - Logs directory: logs/
+2025-08-04 11:34:39,589 - app_enhanced - INFO - ==================================================
+2025-08-04 11:35:09,402 - app_enhanced - INFO - Batch validation successful with 0 warnings
+2025-08-04 11:35:09,427 - app_enhanced - INFO - Batch prediction completed: 2 predictions (processing time: 0.026s)
+2025-08-04 11:49:34,871 - app_enhanced - INFO - Input validation successful with 0 warnings
+2025-08-04 11:49:34,906 - app_enhanced - INFO - Prepared input features: ['longitude', 'latitude', 'housing_median_age', 'total_rooms', 'total_bedrooms', 'population', 'households', 'median_income', 'rooms_per_household', 'bedrooms_per_room', 'population_per_household', 'ocean_proximity']
+2025-08-04 11:49:34,923 - app_enhanced - INFO - Successful prediction: 371300.0 (processing time: 0.048s)
+2025-08-04 11:49:34,934 - app_enhanced - INFO - Batch validation successful with 0 warnings
+2025-08-04 11:49:34,938 - app_enhanced - INFO - Batch prediction completed: 2 predictions (processing time: 0.004s)
+2025-08-04 11:49:34,942 - app_enhanced - INFO - Health check completed: healthy
+2025-08-04 11:49:34,944 - app_enhanced - INFO - Manual retrain triggered via API. Reason: manual_api_trigger

@@ -1,0 +1,12 @@
+{
+  "data_path": "data/housing.csv",
+  "output_dir": "reports",
+  "run_eda": true,
+  "run_feature_engineering": true,
+  "run_model_training": true,
+  "pipeline_info": {
+    "description": "Simplified MLOps pipeline demonstrating notebook-to-Python conversion",
+    "author": "Group 14",
+    "version": "1.0.0"
+  }
+}

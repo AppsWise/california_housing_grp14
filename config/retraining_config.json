@@ -1,0 +1,10 @@
+{
+  "performance_threshold": 0.1,
+  "min_new_samples": 100,
+  "retrain_interval_hours": 24,
+  "enable_auto_retrain": true,
+  "enable_data_monitoring": true,
+  "enable_performance_monitoring": true,
+  "backup_models": true,
+  "notification_email": null
+}

@@ -9,11 +9,19 @@ import pickle
 import numpy as np
 import pandas as pd
 from prometheus_flask_exporter import PrometheusMetrics
+from pydantic import ValidationError
 import sys
 
 # Add utils to path for database access
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.database import PredictionDatabase
+from utils.validation import (
+    validate_prediction_input, 
+    validate_batch_input,
+    PredictionResponse,
+    BatchPredictionResponse,
+    ErrorResponse
+)
 
 app = Flask(__name__)
 metrics = PrometheusMetrics(app)

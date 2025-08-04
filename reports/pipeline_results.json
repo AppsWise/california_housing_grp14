@@ -1,0 +1,90 @@
+{
+  "eda": {
+    "dataset_info": {
+      "file_path": "data/housing.csv",
+      "analysis_type": "California Housing EDA",
+      "features_analyzed": [
+        "longitude",
+        "latitude",
+        "housing_median_age",
+        "total_rooms",
+        "total_bedrooms",
+        "population",
+        "households",
+        "median_income",
+        "ocean_proximity"
+      ]
+    },
+    "summary": {
+      "total_features": 9,
+      "target_variable": "median_house_value",
+      "data_quality": "Good (minimal missing values)",
+      "key_insights": [
+        "Geographic features show clear regional patterns",
+        "Income is strongly correlated with house values",
+        "Ocean proximity affects pricing significantly"
+      ]
+    }
+  },
+  "feature_engineering": {
+    "original_features": 9,
+    "new_features_created": [
+      "bedrooms_per_household",
+      "rooms_per_household",
+      "population_per_household",
+      "income_category",
+      "age_category"
+    ],
+    "transformations_applied": [
+      "log_transform_population",
+      "log_transform_total_rooms",
+      "standard_scale_numeric_features",
+      "one_hot_encode_ocean_proximity"
+    ],
+    "final_feature_count": 14,
+    "feature_engineering_summary": {
+      "ratio_features": 3,
+      "categorical_features": 2,
+      "scaling_applied": true,
+      "encoding_applied": true
+    }
+  },
+  "model_training": {
+    "models_trained": [
+      "linear_regression",
+      "decision_tree",
+      "random_forest"
+    ],
+    "model_results": {
+      "linear_regression": {
+        "r2_score": 0.6234,
+        "mse": 4782100000.0,
+        "training_time": "2.3s"
+      },
+      "decision_tree": {
+        "r2_score": 0.6789,
+        "mse": 4123400000.0,
+        "training_time": "5.7s"
+      },
+      "random_forest": {
+        "r2_score": 0.7123,
+        "mse": 3894500000.0,
+        "training_time": "23.4s"
+      }
+    },
+    "best_model": {
+      "name": "random_forest",
+      "performance": {
+        "r2_score": 0.7123,
+        "mse": 3894500000.0,
+        "training_time": "23.4s"
+      }
+    },
+    "features_used": 14,
+    "training_summary": {
+      "total_models": 3,
+      "best_r2_score": 0.7123,
+      "performance_improvement": "Significant improvement with feature engineering"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+artifact_uri: file:///Volumes/Development/Development/assignment/MLOps_ASS1/mlruns/205588097296088988/cdebf86e93b145a99782a2af5f557633/artifacts
+end_time: 1754288386855
+entry_point_name: ''
+experiment_id: '205588097296088988'
+lifecycle_stage: active
+run_id: cdebf86e93b145a99782a2af5f557633
+run_name: Decision_Tree
+run_uuid: cdebf86e93b145a99782a2af5f557633
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1754288383492
+status: 3
+tags: []
+user_id: jeetendra

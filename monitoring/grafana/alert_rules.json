@@ -1,0 +1,57 @@
+{
+  "groups": [
+    {
+      "name": "mlops_alerts",
+      "rules": [
+        {
+          "alert": "HighErrorRate",
+          "expr": "rate(flask_http_request_total{status=~\"4..|5..\"}[5m]) / rate(flask_http_request_total[5m]) > 0.05",
+          "for": "2m",
+          "labels": {
+            "severity": "critical"
+          },
+          "annotations": {
+            "summary": "High error rate detected",
+            "description": "Error rate is above 5% for more than 2 minutes"
+          }
+        },
+        {
+          "alert": "HighResponseTime",
+          "expr": "histogram_quantile(0.95, flask_http_request_duration_seconds_bucket) > 1.0",
+          "for": "5m",
+          "labels": {
+            "severity": "warning"
+          },
+          "annotations": {
+            "summary": "High response time detected",
+            "description": "95th percentile response time is above 1 second"
+          }
+        },
+        {
+          "alert": "ModelPredictionAnomalies",
+          "expr": "histogram_quantile(0.95, prediction_duration_seconds_bucket) > 0.5",
+          "for": "3m",
+          "labels": {
+            "severity": "warning"
+          },
+          "annotations": {
+            "summary": "Model prediction taking too long",
+            "description": "Model prediction time is above 500ms"
+          }
+        },
+        {
+          "alert": "NoRecentPredictions",
+          "expr": "increase(predictions_total[10m]) == 0",
+          "for": "10m",
+          "labels": {
+            "severity": "info"
+          },
+          "annotations": {
+            "summary": "No recent predictions",
+            "description": "No predictions made in the last 10 minutes"
+          }
+        }
+      ]
+    }
+  ]
+}
