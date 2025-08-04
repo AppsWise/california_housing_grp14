@@ -70,7 +70,7 @@ jobs:
         sleep 10
         
         # Test health endpoint
-        curl -f http://localhost:5003/health || exit 1
+        curl -f http://localhost:5000/health || exit 1
         
         # Clean up
         docker stop test-container
@@ -95,7 +95,7 @@ jobs:
         sleep 15
         
         # Test various endpoints
-        curl -f http://localhost:5004/health
+        curl -f http://localhost:5000/health
         
         # Test prediction endpoint
         curl -X POST http://localhost:5004/api/predict \
