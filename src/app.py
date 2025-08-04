@@ -19,4 +19,5 @@ sys.path.insert(0, str(project_root))
 # Import and run the main API
 if __name__ == "__main__":
     from src.api.app import app
-    app.run(host='0.0.0.0', port=5001, debug=False)
+
+    app.run(host="0.0.0.0", port=5001, debug=False)

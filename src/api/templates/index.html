@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,7 +5,7 @@
 </head>
 <body>
     <h1>House Price Prediction</h1>
-    <form action="{{ url_for('predict') }}" method="post">
+    <form id="predictForm">
         <input type="text" name="MedInc" placeholder="MedInc" required="required" /><br>
         <input type="text" name="HouseAge" placeholder="HouseAge" required="required" /><br>
         <input type="text" name="AveRooms" placeholder="AveRooms" required="required" /><br>
@@ -18,6 +17,37 @@
         <button type="submit">Predict</button>
     </form>
     <br>
-    {{ prediction_text }}
+    <pre id="prediction_result"></pre>
+    <script>
+        document.getElementById('predictForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = {
+                median_income: form.MedInc.value,
+                housing_median_age: form.HouseAge.value,
+                total_rooms: form.AveRooms.value,
+                total_bedrooms: form.AveBedrms.value,
+                population: form.Population.value,
+                households: form.AveOccup.value,
+                latitude: form.Latitude.value,
+                longitude: form.Longitude.value,
+                ocean_proximity: 'INLAND'
+            };
+            const response = await fetch('/api/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            console.log(result);
+            document.getElementById('prediction_result').innerText =
+                'prediction: ' + JSON.stringify(result.prediction, null, 2) + '\n' +
+                'model_version: ' + result.model_version + '\n' +
+                'timestamp: ' + result.timestamp + '\n' +
+                'processing_time_ms: ' + result.processing_time_ms;
+        });
+    </script>
 </body>
 </html>
