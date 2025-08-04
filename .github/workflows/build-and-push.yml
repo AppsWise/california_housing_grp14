@@ -66,8 +66,11 @@ jobs:
         # Run a quick test of the built image
         docker run -d --name test-container -p 5003:5000 ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
         
-        # Wait for container to start
-        sleep 10
+        # Wait for the container to start
+        sleep 15
+        
+        # Check if the container is running
+        docker ps -a | grep test-container 
         
         # Test health endpoint
         curl -f http://localhost:5000/health || exit 1
