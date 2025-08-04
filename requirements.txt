@@ -7,3 +7,4 @@ prometheus-flask-exporter==0.23.2
 prometheus-client==0.21.1
 pytest==8.4.1
 pydantic
+utils
