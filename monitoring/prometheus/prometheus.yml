@@ -1,0 +1,24 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'california-housing-api'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['housing-api:5001']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  - job_name: 'mlflow'
+    static_configs:
+      - targets: ['mlflow:5000']
+    scrape_interval: 60s
