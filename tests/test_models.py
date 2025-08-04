@@ -66,7 +66,10 @@ def test_model_prediction_format(sample_housing_data):
 
         # Create test dataframe
         test_df = pd.DataFrame([sample_housing_data])
-
+        # Add engineered features expected by the model
+        test_df["rooms_per_household"] = test_df["total_rooms"] / test_df["households"]
+        test_df["bedrooms_per_room"] = test_df["total_bedrooms"] / test_df["total_rooms"]
+        test_df["population_per_household"] = test_df["population"] / test_df["households"]
         # Make prediction
         prediction = model.predict(test_df)
 
