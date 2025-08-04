@@ -1,0 +1,6 @@
+artifact_location: file:///Volumes/Development/Development/assignment/MLOps_ASS1/mlruns/205588097296088988
+creation_time: 1754281588475
+experiment_id: '205588097296088988'
+last_update_time: 1754281588475
+lifecycle_stage: active
+name: california_housing_experiment

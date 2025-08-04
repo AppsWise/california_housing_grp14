@@ -1,0 +1,10 @@
+artifact_location: file:///Volumes/Development/Development/assignment/MLOps_ASS1/mlruns/205588097296088988/models/m-542c98ff9cab4e9980d3d74461972bb3/artifacts
+creation_timestamp: 1754281595954
+experiment_id: '205588097296088988'
+last_updated_timestamp: 1754281598489
+model_id: m-542c98ff9cab4e9980d3d74461972bb3
+model_type: null
+name: best_model
+source_run_id: 47e0e9ca9575467288d26f8f621650c1
+status: 2
+status_message: null

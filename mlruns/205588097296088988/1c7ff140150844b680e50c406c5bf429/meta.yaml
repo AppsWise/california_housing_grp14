@@ -1,0 +1,14 @@
+artifact_uri: file:///Volumes/Development/Development/assignment/MLOps_ASS1/mlruns/205588097296088988/1c7ff140150844b680e50c406c5bf429/artifacts
+end_time: 1754281592960
+entry_point_name: ''
+experiment_id: '205588097296088988'
+lifecycle_stage: active
+run_id: 1c7ff140150844b680e50c406c5bf429
+run_name: Linear_Regression
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1754281589041
+status: 3
+tags: []
+user_id: jeetendra

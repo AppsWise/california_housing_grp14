@@ -1,0 +1,29 @@
+2025-08-04 11:12:21,216 - app - INFO - Model loaded successfully from /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:13:27,709 - app - INFO - Model loaded successfully from /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:13:27,711 - app - INFO - ==================================================
+2025-08-04 11:13:27,711 - app - INFO - California Housing Prediction API Starting...
+2025-08-04 11:13:27,711 - app - INFO - Model path: /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:13:27,711 - app - INFO - Model loaded: True
+2025-08-04 11:13:27,711 - app - INFO - Database initialized: True
+2025-08-04 11:13:27,711 - app - INFO - Logs directory: logs/
+2025-08-04 11:13:27,711 - app - INFO - ==================================================
+2025-08-04 11:13:54,978 - app - INFO - Model loaded successfully from /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:13:54,979 - app - INFO - ==================================================
+2025-08-04 11:13:54,979 - app - INFO - California Housing Prediction API Starting...
+2025-08-04 11:13:54,979 - app - INFO - Model path: /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:13:54,979 - app - INFO - Model loaded: True
+2025-08-04 11:13:54,979 - app - INFO - Database initialized: True
+2025-08-04 11:13:54,979 - app - INFO - Logs directory: logs/
+2025-08-04 11:13:54,979 - app - INFO - ==================================================
+2025-08-04 11:14:14,410 - app - INFO - Model loaded successfully from /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:14:14,411 - app - INFO - ==================================================
+2025-08-04 11:14:14,411 - app - INFO - California Housing Prediction API Starting...
+2025-08-04 11:14:14,411 - app - INFO - Model path: /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-04 11:14:14,411 - app - INFO - Model loaded: True
+2025-08-04 11:14:14,411 - app - INFO - Database initialized: True
+2025-08-04 11:14:14,411 - app - INFO - Logs directory: logs/
+2025-08-04 11:14:14,411 - app - INFO - ==================================================
+2025-08-04 11:14:32,565 - app - INFO - Prepared input features: ['longitude', 'latitude', 'housing_median_age', 'total_rooms', 'total_bedrooms', 'population', 'households', 'median_income', 'rooms_per_household', 'bedrooms_per_room', 'population_per_household', 'ocean_proximity']
+2025-08-04 11:14:32,573 - app - INFO - Health check completed: healthy
+2025-08-04 11:14:41,670 - app - INFO - Prepared input features: ['longitude', 'latitude', 'housing_median_age', 'total_rooms', 'total_bedrooms', 'population', 'households', 'median_income', 'rooms_per_household', 'bedrooms_per_room', 'population_per_household', 'ocean_proximity']
+2025-08-04 11:14:41,674 - app - INFO - Successful prediction: 371300.0 (processing time: 0.004s)
