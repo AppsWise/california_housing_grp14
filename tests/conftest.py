@@ -22,13 +22,3 @@ def sample_housing_data():
         "median_income": 8.3252,
         "ocean_proximity": "NEAR BAY",
     }
-
-
-@pytest.fixture
-def api_client():
-    """Flask test client fixture"""
-    from api.app import app
-
-    app.config["TESTING"] = True
-    with app.test_client() as client:
-        yield client
