@@ -1,0 +1,8 @@
+2025-08-05 04:49:49,927 - app - INFO - Model loaded successfully from /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-05 04:49:49,928 - app - INFO - ==================================================
+2025-08-05 04:49:49,928 - app - INFO - California Housing Prediction API Starting...
+2025-08-05 04:49:49,928 - app - INFO - Model path: /Volumes/Development/Development/assignment/MLOps_ASS1/src/api/../../models/model.pkl
+2025-08-05 04:49:49,928 - app - INFO - Model loaded: True
+2025-08-05 04:49:49,928 - app - INFO - Database initialized: True
+2025-08-05 04:49:49,928 - app - INFO - Logs directory: logs/
+2025-08-05 04:49:49,928 - app - INFO - ==================================================

@@ -2,6 +2,14 @@
 
 **"Build, Track, Package, Deploy and Monitor an ML Model using MLOps Best Practices"**
 
+### Group Members Name with Student ID:
+| # | Group Member Name         | BITS ID     | Contribution |
+|---|---------------------------|-------------|--------------|
+| 1 |ANUSHRI SRINATH            |2023AC05227 | 100%         |
+| 2 | GAJENDRA KUMAR CHOUDHARY | 2023AC05756 | 100 %        |
+| 3 | JEETENDRA KUMAR CHOUDHARY | 2023AC05554 | 200 %        |
+| 4 | SRIKANTH V GOUTHAM           | 2023AC05228 | 100 %        |
+
 ## 🏗️ Project Overview
 
 This project implements a complete MLOps pipeline for California Housing price prediction using machine learning best practices. The system includes model training, tracking, API deployment, monitoring, and automated CI/CD.
@@ -152,6 +160,9 @@ python src/api/app.py
 docker build -t california-housing-api .
 docker run -p 5001:5001 california-housing-api
 ```
+
+## if there is anything running on port can be stopped using 
+- `sudo kill -9 $(sudo lsof -t -i :[port_number])`
 
 ### 5. Testing
 ```bash
