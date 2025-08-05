@@ -58,6 +58,15 @@ jobs:
           type=ref,event=pr
           type=sha,prefix=sha-
           type=raw,value=latest,enable={{is_default_branch}}
+    
+    - name: Debug image information
+      run: |
+        echo "Registry: ${{ env.REGISTRY }}"
+        echo "Username: ${{ secrets.DOCKERHUB_USERNAME }}"
+        echo "Image Name: ${{ env.IMAGE_NAME }}"
+        echo "Full Image: ${{ env.REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest"
+        echo "Meta Tags: ${{ steps.meta.outputs.tags }}"
+        echo "Meta Labels: ${{ steps.meta.outputs.labels }}"
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
@@ -95,24 +104,65 @@ jobs:
           VCS_REF=${{ github.sha }}
           VERSION=latest
 
+    - name: Verify image push
+      run: |
+        echo "Verifying that the image was pushed to Docker Hub..."
+        docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+        docker images | grep ${{ env.IMAGE_NAME }}
+        echo "✅ Image verified in Docker Hub"
+
     - name: Update docker-compose for deployment
       run: |
-        # Update docker-compose.yml with the new image
-        sed -i "s|build:|#build:|g" deployment/docker-compose.yml
-        sed -i "s|context: .|#context: .|g" deployment/docker-compose.yml  
-        sed -i "s|dockerfile: deployment/Dockerfile|#dockerfile: deployment/Dockerfile|g" deployment/docker-compose.yml
-        sed -i "/#build:/a\\    image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest" deployment/docker-compose.yml
+        echo "Updating docker-compose.yml files with the new image..."
+        echo "Target image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest"
+        
+        # Update deployment docker-compose.yml
+        echo "Current deployment/docker-compose.yml content:"
+        cat deployment/docker-compose.yml
+        
+        # Create a backup
+        cp deployment/docker-compose.yml deployment/docker-compose.yml.backup
+        
+        # Use a more robust approach to update the image in deployment/docker-compose.yml
+        sed -i 's|image: .*california-housing.*|image: '"${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest"'|g' deployment/docker-compose.yml
+        
+        # Also update root docker-compose.yml for production mode
+        echo "Current docker-compose.yml content:"
+        cat docker-compose.yml | head -30
+        
+        # Create production override file
+        cat > docker-compose.prod.yml << EOF
+        version: '3.8'
+        services:
+          housing-api:
+            image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+            build: null  # Disable build in production
+        EOF
+        
+        echo "Created docker-compose.prod.yml:"
+        cat docker-compose.prod.yml
+        
+        echo "Updated deployment/docker-compose.yml content:"
+        cat deployment/docker-compose.yml
 
     - name: Test the built image locally
       run: |
+        # Use the same image reference that was just pushed
+        IMAGE_NAME="${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest"
+        echo "Testing image: $IMAGE_NAME"
+        
         # Run a quick test of the built image
-        docker run -d --name test-container -p 5001:5001 ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+        docker run -d --name test-container -p 5001:5001 $IMAGE_NAME
         
         # Wait for the container to start
         sleep 30
         
         # Check if the container is running
         docker ps -a | grep test-container 
+        
+        # Show container logs for debugging
+        echo "Container logs:"
+        docker logs test-container
         
         # Test health endpoint (retry a few times as the service may take time to start)
         for i in {1..5}; do
@@ -143,9 +193,16 @@ jobs:
     - name: Run integration tests
       run: |
         echo "🧪 Running integration tests..."
+        IMAGE_NAME="${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest"
+        echo "Testing image: $IMAGE_NAME"
+        
         # Start the application for testing
-        docker run -d --name integration-test -p 5002:5001 ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+        docker run -d --name integration-test -p 5002:5001 $IMAGE_NAME
         sleep 30
+        
+        # Show container logs for debugging
+        echo "Integration test container logs:"
+        docker logs integration-test
         
         # Test health endpoint first
         for i in {1..5}; do
