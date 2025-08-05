@@ -2,16 +2,18 @@ version: '3.8'
 
 services:
   app:
-    build:
-      context: ..
-      dockerfile: deployment/Dockerfile
-    image: california-housing:latest
+    # Build configuration commented out for production deployment
+    # build:
+    #   context: ..
+    #   dockerfile: deployment/Dockerfile
+    image: jeetendra-choudhary/california-housing:latest
     ports:
-      - "5001:5000"
+      - "5001:5001"
     environment:
       - FLASK_ENV=production
+      - PORT=5001
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
       interval: 30s
       timeout: 10s
       retries: 3
