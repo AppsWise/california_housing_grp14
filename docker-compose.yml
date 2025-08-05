@@ -39,7 +39,7 @@ services:
     image: python:3.11-slim
     container_name: mlflow-server
     ports:
-      - "5000:5000"
+      - "5002:5000"
     environment:
       - MLFLOW_BACKEND_STORE_URI=sqlite:///mlflow/mlflow.db
       - MLFLOW_DEFAULT_ARTIFACT_ROOT=/mlflow/artifacts

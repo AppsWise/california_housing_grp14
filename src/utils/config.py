@@ -217,10 +217,8 @@ def get_project_root() -> Path:
 
 
 def ensure_directories():
-    """Ensure required directories exist"""
+    """Ensure required directories exist (except read-only data directories)"""
     directories = [
-        "data/raw",
-        "data/processed",
         "models/experiments",
         "monitoring/logs",
         "monitoring/prometheus",
@@ -231,12 +229,16 @@ def ensure_directories():
     project_root = get_project_root()
     for directory in directories:
         dir_path = project_root / directory
-        dir_path.mkdir(parents=True, exist_ok=True)
+        try:
+            dir_path.mkdir(parents=True, exist_ok=True)
 
-        # Create .gitkeep for empty directories
-        gitkeep_path = dir_path / ".gitkeep"
-        if not any(dir_path.iterdir()) and not gitkeep_path.exists():
-            gitkeep_path.touch()
+            # Create .gitkeep for empty directories
+            gitkeep_path = dir_path / ".gitkeep"
+            if not any(dir_path.iterdir()) and not gitkeep_path.exists():
+                gitkeep_path.touch()
+        except OSError:
+            # Skip if directory cannot be created (e.g., read-only file system)
+            pass
 
 
 # Global configuration instances

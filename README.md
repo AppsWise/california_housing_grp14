@@ -7,7 +7,7 @@
 |---|---------------------------|-------------|--------------|
 | 1 |ANUSHRI SRINATH            |2023AC05227 | 100%         |
 | 2 | GAJENDRA KUMAR CHOUDHARY | 2023AC05756 | 100 %        |
-| 3 | JEETENDRA KUMAR CHOUDHARY | 2023AC05554 | 200 %        |
+| 3 | JEETENDRA KUMAR CHOUDHARY | 2023AC05554 | 100 %        |
 | 4 | SRIKANTH V GOUTHAM           | 2023AC05228 | 100 %        |
 
 ## 🏗️ Project Overview

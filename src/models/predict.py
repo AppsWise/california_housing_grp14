@@ -78,6 +78,9 @@ class HousingPredictor:
         else:
             raise ValueError("Invalid input format for features")
 
+        # Apply feature engineering
+        features_df = self._engineer_features(features_df)
+
         # Make prediction
         try:
             prediction = self.model.predict(features_df)
@@ -90,6 +93,41 @@ class HousingPredictor:
         except Exception as e:
             logger.error(f"Error making prediction: {e}")
             raise
+
+    def _engineer_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Apply feature engineering to input data
+        
+        Args:
+            df: Input dataframe
+            
+        Returns:
+            DataFrame with engineered features
+        """
+        df_copy = df.copy()
+        
+        # Create derived features that the model expects
+        if "total_bedrooms" in df_copy.columns and "households" in df_copy.columns:
+            df_copy["bedrooms_per_household"] = (
+                df_copy["total_bedrooms"] / df_copy["households"]
+            )
+
+        if "population" in df_copy.columns and "households" in df_copy.columns:
+            df_copy["population_per_household"] = (
+                df_copy["population"] / df_copy["households"]
+            )
+
+        if "total_rooms" in df_copy.columns and "households" in df_copy.columns:
+            df_copy["rooms_per_household"] = (
+                df_copy["total_rooms"] / df_copy["households"]
+            )
+            
+        if "total_bedrooms" in df_copy.columns and "total_rooms" in df_copy.columns:
+            df_copy["bedrooms_per_room"] = (
+                df_copy["total_bedrooms"] / df_copy["total_rooms"]
+            )
+        
+        return df_copy
 
     def predict_proba(
         self, features: Union[Dict[str, float], pd.DataFrame, np.ndarray]

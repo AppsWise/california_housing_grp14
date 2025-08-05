@@ -6,3 +6,17 @@
 2025-08-05 04:49:49,928 - app - INFO - Database initialized: True
 2025-08-05 04:49:49,928 - app - INFO - Logs directory: logs/
 2025-08-05 04:49:49,928 - app - INFO - ==================================================
+2025-08-05 05:18:39,373 - app - INFO - Model loaded successfully from /app/src/api/../../models/model.pkl
+2025-08-05 05:18:39,375 - app - INFO - ==================================================
+2025-08-05 05:18:39,375 - app - INFO - California Housing Prediction API Starting...
+2025-08-05 05:18:39,375 - app - INFO - Model path: /app/src/api/../../models/model.pkl
+2025-08-05 05:18:39,375 - app - INFO - Model loaded: True
+2025-08-05 05:18:39,375 - app - INFO - Database initialized: True
+2025-08-05 05:18:39,376 - app - INFO - Logs directory: logs/
+2025-08-05 05:18:39,376 - app - INFO - ==================================================
+2025-08-05 05:25:10,648 - app - INFO - Prepared input features: ['longitude', 'latitude', 'housing_median_age', 'total_rooms', 'total_bedrooms', 'population', 'households', 'median_income', 'rooms_per_household', 'bedrooms_per_room', 'population_per_household', 'ocean_proximity']
+2025-08-05 05:25:10,658 - app - INFO - Health check completed: healthy
+2025-08-05 05:25:36,427 - app - INFO - Prepared input features: ['longitude', 'latitude', 'housing_median_age', 'total_rooms', 'total_bedrooms', 'population', 'households', 'median_income', 'rooms_per_household', 'bedrooms_per_room', 'population_per_household', 'ocean_proximity']
+2025-08-05 05:25:36,429 - app - INFO - Health check completed: healthy
+2025-08-05 05:25:42,940 - app - INFO - Prepared input features: ['longitude', 'latitude', 'housing_median_age', 'total_rooms', 'total_bedrooms', 'population', 'households', 'median_income', 'rooms_per_household', 'bedrooms_per_room', 'population_per_household', 'ocean_proximity']
+2025-08-05 05:25:42,942 - app - INFO - Health check completed: healthy
