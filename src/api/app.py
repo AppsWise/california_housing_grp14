@@ -155,7 +155,7 @@ def health_check():
     processing_time = (time.time() - start_time_check) * 1000
     performance_monitor.record_request(processing_time, 200)
 
-    return jsonify(response.dict()), 200
+    return jsonify(response.model_dump()), 200
 
 
 @app.route("/metrics")
@@ -173,9 +173,10 @@ def get_metrics():
     prediction_count_24h = 0
     if db_manager:
         try:
-            prediction_count_24h = db_manager.get_prediction_count(hours=24)
+            stats = db_manager.get_prediction_stats(hours=24)
+            prediction_count_24h = stats.get('total_predictions', 0)
         except Exception as e:
-            logger.error(f"Error getting prediction count: {e}")
+            logger.error(f"Error getting prediction stats: {e}")
 
     response = MetricsResponse(
         total_predictions=perf_stats["total_requests"],
@@ -189,7 +190,50 @@ def get_metrics():
     processing_time = (time.time() - start_time_metrics) * 1000
     performance_monitor.record_request(processing_time, 200)
 
-    return jsonify(response.dict()), 200
+    return jsonify(response.model_dump()), 200
+
+
+@app.route("/metrics/prometheus")
+def get_prometheus_metrics():
+    """Prometheus-compatible metrics endpoint"""
+    if not api_config.get("monitoring.enable_metrics", True):
+        return "# Metrics disabled\n", 404, {'Content-Type': 'text/plain'}
+
+    # Get performance stats
+    perf_stats = performance_monitor.get_current_stats()
+
+    # Get prediction metrics from database
+    prediction_count_24h = 0
+    if db_manager:
+        try:
+            stats = db_manager.get_prediction_stats(hours=24)
+            prediction_count_24h = stats.get('total_predictions', 0)
+        except Exception as e:
+            logger.error(f"Error getting prediction stats: {e}")
+
+    # Format metrics in Prometheus format
+    metrics = f"""# HELP housing_api_predictions_total Total number of predictions made
+# TYPE housing_api_predictions_total counter
+housing_api_predictions_total {perf_stats["total_requests"]}
+
+# HELP housing_api_predictions_24h Number of predictions in last 24 hours
+# TYPE housing_api_predictions_24h gauge
+housing_api_predictions_24h {prediction_count_24h}
+
+# HELP housing_api_response_time_ms Average response time in milliseconds
+# TYPE housing_api_response_time_ms gauge
+housing_api_response_time_ms {perf_stats["average_response_time_ms"]}
+
+# HELP housing_api_error_rate Error rate percentage
+# TYPE housing_api_error_rate gauge
+housing_api_error_rate {perf_stats["error_rate_percentage"]}
+
+# HELP housing_api_model_loaded Whether the ML model is loaded
+# TYPE housing_api_model_loaded gauge
+housing_api_model_loaded {1 if model is not None else 0}
+"""
+
+    return metrics, 200, {'Content-Type': 'text/plain; version=0.0.4; charset=utf-8'}
 
 
 @app.route("/api/predict", methods=["POST"])
@@ -216,10 +260,10 @@ def predict():
             performance_monitor.record_request(
                 (time.time() - start_time_pred) * 1000, 503
             )
-            return jsonify(error_response.dict()), 503
+            return jsonify(error_response.model_dump()), 503
 
         # Make prediction
-        prediction_input = validated_input.dict()
+        prediction_input = validated_input.model_dump()
         prediction = model.predict(prediction_input)
 
         processing_time = (time.time() - start_time_pred) * 1000
@@ -229,10 +273,10 @@ def predict():
             try:
                 db_manager.log_prediction_request(
                     endpoint="/api/predict",
+                    method="POST",
                     input_data=prediction_input,
                     prediction=prediction,
-                    processing_time=processing_time,
-                    model_version=api_config.get("model.version", "1.0.0"),
+                    processing_time_ms=processing_time,
                 )
             except Exception as e:
                 logger.error(f"Error logging prediction: {e}")
@@ -257,7 +301,7 @@ def predict():
         )
 
         performance_monitor.record_request(processing_time, 200)
-        return jsonify(response.dict()), 200
+        return jsonify(response.model_dump()), 200
 
     except ValidationError as e:
         error_details = [
@@ -290,7 +334,7 @@ def predict():
 
         processing_time = (time.time() - start_time_pred) * 1000
         performance_monitor.record_request(processing_time, 400)
-        return jsonify(error_response.dict()), 400
+        return jsonify(error_response.model_dump()), 400
 
     except Exception as e:
         error_response = ErrorResponse(
@@ -307,7 +351,7 @@ def predict():
 
         processing_time = (time.time() - start_time_pred) * 1000
         performance_monitor.record_request(processing_time, 500)
-        return jsonify(error_response.dict()), 500
+        return jsonify(error_response.model_dump()), 500
 
 
 @app.route("/api/predict/batch", methods=["POST"])
@@ -334,12 +378,12 @@ def predict_batch():
             performance_monitor.record_request(
                 (time.time() - start_time_batch) * 1000, 503
             )
-            return jsonify(error_response.dict()), 503
+            return jsonify(error_response.model_dump()), 503
 
         # Make predictions
         predictions = []
         for pred_input in validated_input.predictions:
-            prediction = model.predict(pred_input.dict())
+            prediction = model.predict(pred_input.model_dump())
             predictions.append(prediction)
 
         processing_time = (time.time() - start_time_batch) * 1000
@@ -350,10 +394,10 @@ def predict_batch():
                 for i, pred_input in enumerate(validated_input.predictions):
                     db_manager.log_prediction_request(
                         endpoint="/api/predict/batch",
-                        input_data=pred_input.dict(),
+                        method="POST",
+                        input_data=pred_input.model_dump(),
                         prediction=predictions[i],
-                        processing_time=processing_time / len(predictions),
-                        model_version=api_config.get("model.version", "1.0.0"),
+                        processing_time_ms=processing_time / len(predictions),
                     )
             except Exception as e:
                 logger.error(f"Error logging batch prediction: {e}")
@@ -373,7 +417,7 @@ def predict_batch():
         )
 
         performance_monitor.record_request(processing_time, 200)
-        return jsonify(response.dict()), 200
+        return jsonify(response.model_dump()), 200
 
     except ValidationError as e:
         error_details = [
@@ -400,7 +444,7 @@ def predict_batch():
 
         processing_time = (time.time() - start_time_batch) * 1000
         performance_monitor.record_request(processing_time, 400)
-        return jsonify(error_response.dict()), 400
+        return jsonify(error_response.model_dump()), 400
 
     except Exception as e:
         error_response = ErrorResponse(
@@ -411,7 +455,7 @@ def predict_batch():
 
         processing_time = (time.time() - start_time_batch) * 1000
         performance_monitor.record_request(processing_time, 500)
-        return jsonify(error_response.dict()), 500
+        return jsonify(error_response.model_dump()), 500
 
 
 if __name__ == "__main__":

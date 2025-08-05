@@ -12,7 +12,7 @@ scrape_configs:
       - targets: ['localhost:9090']
 
   - job_name: 'california-housing-api'
-    metrics_path: '/metrics'
+    metrics_path: '/metrics/prometheus'
     static_configs:
       - targets: ['housing-api:5001']
     scrape_interval: 30s
