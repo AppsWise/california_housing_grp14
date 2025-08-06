@@ -372,3 +372,188 @@ details
 2025-08-06 08:48:51,102 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 08:48:51] "POST /api/predict HTTP/1.1" 200 -
 2025-08-06 10:39:33,612 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 10:39:33] "GET / HTTP/1.1" 200 -
 2025-08-06 10:39:35,659 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 10:39:35] "GET /api/logs/predictions?min_price=300000&hours=24 HTTP/1.1" 200 -
+2025-08-06 12:28:37,466 - src.utils.monitoring - INFO - Registered health check: disk_space
+2025-08-06 12:28:37,466 - src.utils.monitoring - INFO - Registered health check: memory_usage
+2025-08-06 12:28:37,466 - src.utils.monitoring - INFO - Registered health check: cpu_usage
+2025-08-06 12:28:37,489 - src.utils.prometheus_metrics - INFO - Prometheus metrics collector initialized
+2025-08-06 12:28:37,490 - src.utils.prometheus_metrics - INFO - Prometheus metrics collector initialized globally
+2025-08-06 12:28:37,491 - src.utils.monitoring - INFO - Registered health check: model_loaded
+2025-08-06 12:28:37,491 - src.utils.monitoring - INFO - Registered health check: database_connection
+2025-08-06 12:28:37,491 - src.utils.monitoring - INFO - Registered health check: mlflow_connection
+2025-08-06 12:28:37,491 - root - INFO - Initializing California Housing API...
+2025-08-06 12:28:37,491 - src.utils.mlflow_tracking - INFO - MLflow Model Registry initialized with tracking URI: http://localhost:5000
+2025-08-06 12:28:38,054 - src.utils.mlflow_tracking - ERROR - Error initializing MLflow tracking: API request to endpoint /api/2.0/mlflow/experiments/get-by-name failed with error code 403 != 200. Response body: ''
+2025-08-06 12:28:38,054 - root - WARNING - MLflow initialization failed, continuing without MLflow
+2025-08-06 12:28:38,054 - src.models.predict - INFO - MLflow registry initialized for model loading
+2025-08-06 12:28:38,083 - src.utils.mlflow_tracking - ERROR - Error getting latest model version for california_housing_best_model: API request to endpoint /api/2.0/mlflow/registered-models/get-latest-versions failed with error code 403 != 200. Response body: ''
+2025-08-06 12:28:38,083 - src.utils.mlflow_tracking - ERROR - Error loading model from registry: No model found for california_housing_best_model in stage Production
+2025-08-06 12:28:38,083 - src.models.predict - WARNING - Failed to load model from MLflow registry: No model found for california_housing_best_model in stage Production
+2025-08-06 12:28:38,083 - src.models.predict - INFO - Falling back to local model file
+2025-08-06 12:28:41,730 - src.models.predict - INFO - Model loaded successfully from local file: models/model.pkl
+2025-08-06 12:28:41,732 - src.utils.mlflow_tracking - ERROR - Error getting model info: API request to endpoint /api/2.0/mlflow/registered-models/get failed with error code 403 != 200. Response body: ''
+2025-08-06 12:28:41,732 - api - INFO - Model loaded
+2025-08-06 12:28:41,733 - root - INFO - Model loaded successfully: local_model
+2025-08-06 12:28:41,733 - src.utils.database - INFO - Database tables initialized successfully
+2025-08-06 12:28:41,734 - src.utils.database - INFO - Initialized prediction database at logs/predictions.db
+2025-08-06 12:28:41,734 - root - INFO - Database initialized successfully
+2025-08-06 12:28:41,734 - root - INFO - California Housing API initialized successfully
+2025-08-06 12:28:59,228 - src.utils.monitoring - INFO - Registered health check: disk_space
+2025-08-06 12:28:59,228 - src.utils.monitoring - INFO - Registered health check: memory_usage
+2025-08-06 12:28:59,228 - src.utils.monitoring - INFO - Registered health check: cpu_usage
+2025-08-06 12:28:59,248 - src.utils.prometheus_metrics - INFO - Prometheus metrics collector initialized
+2025-08-06 12:28:59,248 - src.utils.prometheus_metrics - INFO - Prometheus metrics collector initialized globally
+2025-08-06 12:28:59,250 - src.utils.monitoring - INFO - Registered health check: model_loaded
+2025-08-06 12:28:59,250 - src.utils.monitoring - INFO - Registered health check: database_connection
+2025-08-06 12:28:59,250 - src.utils.monitoring - INFO - Registered health check: mlflow_connection
+2025-08-06 12:28:59,250 - root - INFO - Initializing California Housing API...
+2025-08-06 12:28:59,250 - src.utils.mlflow_tracking - INFO - MLflow Model Registry initialized with tracking URI: http://localhost:5000
+2025-08-06 12:28:59,628 - src.utils.mlflow_tracking - ERROR - Error initializing MLflow tracking: API request to endpoint /api/2.0/mlflow/experiments/get-by-name failed with error code 403 != 200. Response body: ''
+2025-08-06 12:28:59,628 - root - WARNING - MLflow initialization failed, continuing without MLflow
+2025-08-06 12:28:59,628 - src.models.predict - INFO - MLflow registry initialized for model loading
+2025-08-06 12:28:59,653 - src.utils.mlflow_tracking - ERROR - Error getting latest model version for california_housing_best_model: API request to endpoint /api/2.0/mlflow/registered-models/get-latest-versions failed with error code 403 != 200. Response body: ''
+2025-08-06 12:28:59,653 - src.utils.mlflow_tracking - ERROR - Error loading model from registry: No model found for california_housing_best_model in stage Production
+2025-08-06 12:28:59,653 - src.models.predict - WARNING - Failed to load model from MLflow registry: No model found for california_housing_best_model in stage Production
+2025-08-06 12:28:59,653 - src.models.predict - INFO - Falling back to local model file
+2025-08-06 12:29:00,782 - src.models.predict - INFO - Model loaded successfully from local file: models/model.pkl
+2025-08-06 12:29:00,784 - src.utils.mlflow_tracking - ERROR - Error getting model info: API request to endpoint /api/2.0/mlflow/registered-models/get failed with error code 403 != 200. Response body: ''
+2025-08-06 12:29:00,784 - api - INFO - Model loaded
+2025-08-06 12:29:00,784 - root - INFO - Model loaded successfully: local_model
+2025-08-06 12:29:00,785 - src.utils.database - INFO - Database tables initialized successfully
+2025-08-06 12:29:00,785 - src.utils.database - INFO - Initialized prediction database at logs/predictions.db
+2025-08-06 12:29:00,785 - root - INFO - Database initialized successfully
+2025-08-06 12:29:00,785 - root - INFO - California Housing API initialized successfully
+2025-08-06 12:29:42,711 - src.utils.monitoring - INFO - Registered health check: disk_space
+2025-08-06 12:29:42,712 - src.utils.monitoring - INFO - Registered health check: memory_usage
+2025-08-06 12:29:42,712 - src.utils.monitoring - INFO - Registered health check: cpu_usage
+2025-08-06 12:29:42,732 - src.utils.prometheus_metrics - INFO - Prometheus metrics collector initialized
+2025-08-06 12:29:42,732 - src.utils.prometheus_metrics - INFO - Prometheus metrics collector initialized globally
+2025-08-06 12:29:42,733 - src.utils.monitoring - INFO - Registered health check: model_loaded
+2025-08-06 12:29:42,733 - src.utils.monitoring - INFO - Registered health check: database_connection
+2025-08-06 12:29:42,733 - src.utils.monitoring - INFO - Registered health check: mlflow_connection
+2025-08-06 12:29:42,733 - root - INFO - Initializing California Housing API...
+2025-08-06 12:29:42,733 - src.utils.mlflow_tracking - INFO - MLflow Model Registry initialized with tracking URI: http://localhost:5000
+2025-08-06 12:29:43,067 - src.utils.mlflow_tracking - ERROR - Error initializing MLflow tracking: API request to endpoint /api/2.0/mlflow/experiments/get-by-name failed with error code 403 != 200. Response body: ''
+2025-08-06 12:29:43,067 - root - WARNING - MLflow initialization failed, continuing without MLflow
+2025-08-06 12:29:43,067 - src.models.predict - INFO - MLflow registry initialized for model loading
+2025-08-06 12:29:43,098 - src.utils.mlflow_tracking - ERROR - Error getting latest model version for california_housing_best_model: API request to endpoint /api/2.0/mlflow/registered-models/get-latest-versions failed with error code 403 != 200. Response body: ''
+2025-08-06 12:29:43,098 - src.utils.mlflow_tracking - ERROR - Error loading model from registry: No model found for california_housing_best_model in stage Production
+2025-08-06 12:29:43,098 - src.models.predict - WARNING - Failed to load model from MLflow registry: No model found for california_housing_best_model in stage Production
+2025-08-06 12:29:43,098 - src.models.predict - INFO - Falling back to local model file
+2025-08-06 12:29:44,227 - src.models.predict - INFO - Model loaded successfully from local file: models/model.pkl
+2025-08-06 12:29:44,229 - src.utils.mlflow_tracking - ERROR - Error getting model info: API request to endpoint /api/2.0/mlflow/registered-models/get failed with error code 403 != 200. Response body: ''
+2025-08-06 12:29:44,229 - api - INFO - Model loaded
+2025-08-06 12:29:44,230 - root - INFO - Model loaded successfully: local_model
+2025-08-06 12:29:44,230 - src.utils.database - INFO - Database tables initialized successfully
+2025-08-06 12:29:44,230 - src.utils.database - INFO - Initialized prediction database at logs/predictions.db
+2025-08-06 12:29:44,230 - root - INFO - Database initialized successfully
+2025-08-06 12:29:44,230 - root - INFO - California Housing API initialized successfully
+2025-08-06 12:29:44,245 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.102:5001
+2025-08-06 12:29:44,245 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-06 12:29:57,499 - api - INFO - Health check: unhealthy
+2025-08-06 12:29:57,511 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:29:57] "GET /health HTTP/1.1" 200 -
+2025-08-06 12:30:06,618 - src.utils.prometheus_metrics - INFO - Updating all Prometheus metrics...
+2025-08-06 12:30:06,619 - src.utils.prometheus_metrics - INFO - Collected 20 database metrics
+2025-08-06 12:30:06,694 - src.utils.prometheus_metrics - ERROR - Error collecting MLflow metrics: 'metrics.processing_time_ms'
+2025-08-06 12:30:06,694 - src.utils.prometheus_metrics - INFO - Collected 12 MLflow metrics
+2025-08-06 12:30:06,694 - src.utils.prometheus_metrics - INFO - All Prometheus metrics updated successfully
+2025-08-06 12:30:06,694 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:30:06] "GET /api/monitoring/metrics HTTP/1.1" 200 -
+2025-08-06 12:30:23,179 - api - INFO - Health check: unhealthy
+2025-08-06 12:30:23,187 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:30:23] "GET /health HTTP/1.1" 200 -
+2025-08-06 12:30:23,194 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:30:23] "GET /metrics/prometheus HTTP/1.1" 200 -
+2025-08-06 12:30:23,199 - src.utils.prometheus_metrics - INFO - Updating all Prometheus metrics...
+2025-08-06 12:30:23,200 - src.utils.prometheus_metrics - INFO - Collected 20 database metrics
+2025-08-06 12:30:23,279 - src.utils.prometheus_metrics - ERROR - Error collecting MLflow metrics: 'metrics.processing_time_ms'
+2025-08-06 12:30:23,279 - src.utils.prometheus_metrics - INFO - Collected 12 MLflow metrics
+2025-08-06 12:30:23,279 - src.utils.prometheus_metrics - INFO - All Prometheus metrics updated successfully
+2025-08-06 12:30:23,279 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:30:23] "GET /api/monitoring/metrics HTTP/1.1" 200 -
+2025-08-06 12:30:23,287 - src.models.predict - INFO - Made prediction for 1 samples
+2025-08-06 12:30:23,289 - src.utils.database - INFO - Logged prediction request 22 for endpoint /api/predict
+2025-08-06 12:30:23,458 - api - INFO - Prediction made
+2025-08-06 12:30:23,459 - root - ERROR - Error recording Prometheus metrics: PrometheusMetricsCollector.record_prediction_metric() got an unexpected keyword argument 'prediction'
+2025-08-06 12:30:23,461 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:30:23] "POST /api/predict HTTP/1.1" 200 -
+2025-08-06 12:30:23,467 - src.models.predict - INFO - Made prediction for 1 samples
+2025-08-06 12:30:23,468 - src.utils.database - INFO - Logged prediction request 23 for endpoint /api/predict
+2025-08-06 12:30:23,489 - api - INFO - Prediction made
+2025-08-06 12:30:23,491 - root - ERROR - Error recording Prometheus metrics: PrometheusMetricsCollector.record_prediction_metric() got an unexpected keyword argument 'prediction'
+2025-08-06 12:30:23,493 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:30:23] "POST /api/predict HTTP/1.1" 200 -
+2025-08-06 12:30:23,497 - src.models.predict - INFO - Made prediction for 1 samples
+2025-08-06 12:30:23,498 - src.utils.database - INFO - Logged prediction request 24 for endpoint /api/predict
+2025-08-06 12:30:23,519 - api - INFO - Prediction made
+2025-08-06 12:30:23,521 - root - ERROR - Error recording Prometheus metrics: PrometheusMetricsCollector.record_prediction_metric() got an unexpected keyword argument 'prediction'
+2025-08-06 12:30:23,522 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:30:23] "POST /api/predict HTTP/1.1" 200 -
+2025-08-06 12:30:25,534 - src.utils.prometheus_metrics - INFO - Updating all Prometheus metrics...
+2025-08-06 12:30:25,536 - src.utils.prometheus_metrics - INFO - Collected 20 database metrics
+2025-08-06 12:30:25,631 - src.utils.prometheus_metrics - ERROR - Error collecting MLflow metrics: 'metrics.processing_time_ms'
+2025-08-06 12:30:25,631 - src.utils.prometheus_metrics - INFO - Collected 12 MLflow metrics
+2025-08-06 12:30:25,631 - src.utils.prometheus_metrics - INFO - All Prometheus metrics updated successfully
+2025-08-06 12:30:25,631 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:30:25] "GET /api/monitoring/metrics HTTP/1.1" 200 -
+2025-08-06 12:31:40,723 - src.utils.monitoring - INFO - Registered health check: disk_space
+2025-08-06 12:31:40,723 - src.utils.monitoring - INFO - Registered health check: memory_usage
+2025-08-06 12:31:40,723 - src.utils.monitoring - INFO - Registered health check: cpu_usage
+2025-08-06 12:31:40,743 - src.utils.prometheus_metrics - INFO - Prometheus metrics collector initialized
+2025-08-06 12:31:40,743 - src.utils.prometheus_metrics - INFO - Prometheus metrics collector initialized globally
+2025-08-06 12:31:40,744 - src.utils.monitoring - INFO - Registered health check: model_loaded
+2025-08-06 12:31:40,744 - src.utils.monitoring - INFO - Registered health check: database_connection
+2025-08-06 12:31:40,744 - src.utils.monitoring - INFO - Registered health check: mlflow_connection
+2025-08-06 12:31:40,744 - root - INFO - Initializing California Housing API...
+2025-08-06 12:31:40,744 - src.utils.mlflow_tracking - INFO - MLflow Model Registry initialized with tracking URI: http://localhost:5000
+2025-08-06 12:31:41,075 - src.utils.mlflow_tracking - ERROR - Error initializing MLflow tracking: API request to endpoint /api/2.0/mlflow/experiments/get-by-name failed with error code 403 != 200. Response body: ''
+2025-08-06 12:31:41,076 - root - WARNING - MLflow initialization failed, continuing without MLflow
+2025-08-06 12:31:41,076 - src.models.predict - INFO - MLflow registry initialized for model loading
+2025-08-06 12:31:41,104 - src.utils.mlflow_tracking - ERROR - Error getting latest model version for california_housing_best_model: API request to endpoint /api/2.0/mlflow/registered-models/get-latest-versions failed with error code 403 != 200. Response body: ''
+2025-08-06 12:31:41,105 - src.utils.mlflow_tracking - ERROR - Error loading model from registry: No model found for california_housing_best_model in stage Production
+2025-08-06 12:31:41,105 - src.models.predict - WARNING - Failed to load model from MLflow registry: No model found for california_housing_best_model in stage Production
+2025-08-06 12:31:41,105 - src.models.predict - INFO - Falling back to local model file
+2025-08-06 12:31:42,135 - src.models.predict - INFO - Model loaded successfully from local file: models/model.pkl
+2025-08-06 12:31:42,137 - src.utils.mlflow_tracking - ERROR - Error getting model info: API request to endpoint /api/2.0/mlflow/registered-models/get failed with error code 403 != 200. Response body: ''
+2025-08-06 12:31:42,137 - api - INFO - Model loaded
+2025-08-06 12:31:42,137 - root - INFO - Model loaded successfully: local_model
+2025-08-06 12:31:42,138 - src.utils.database - INFO - Database tables initialized successfully
+2025-08-06 12:31:42,138 - src.utils.database - INFO - Initialized prediction database at logs/predictions.db
+2025-08-06 12:31:42,138 - root - INFO - Database initialized successfully
+2025-08-06 12:31:42,138 - root - INFO - California Housing API initialized successfully
+2025-08-06 12:31:42,150 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.102:5001
+2025-08-06 12:31:42,150 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-06 12:31:50,823 - src.models.predict - INFO - Made prediction for 1 samples
+2025-08-06 12:31:50,825 - src.utils.database - INFO - Logged prediction request 25 for endpoint /api/predict
+2025-08-06 12:31:50,994 - api - INFO - Prediction made
+2025-08-06 12:31:50,999 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:31:50] "POST /api/predict HTTP/1.1" 200 -
+2025-08-06 12:32:05,703 - src.utils.prometheus_metrics - INFO - Updating all Prometheus metrics...
+2025-08-06 12:32:05,705 - src.utils.prometheus_metrics - INFO - Collected 20 database metrics
+2025-08-06 12:32:05,792 - src.utils.prometheus_metrics - ERROR - Error collecting MLflow metrics: 'metrics.processing_time_ms'
+2025-08-06 12:32:05,792 - src.utils.prometheus_metrics - INFO - Collected 12 MLflow metrics
+2025-08-06 12:32:05,792 - src.utils.prometheus_metrics - INFO - All Prometheus metrics updated successfully
+2025-08-06 12:32:05,792 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:32:05] "GET /api/monitoring/metrics HTTP/1.1" 200 -
+2025-08-06 12:32:17,760 - api - INFO - Health check: unhealthy
+2025-08-06 12:32:17,768 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:32:17] "GET /health HTTP/1.1" 200 -
+2025-08-06 12:32:17,774 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:32:17] "GET /metrics/prometheus HTTP/1.1" 200 -
+2025-08-06 12:32:17,779 - src.utils.prometheus_metrics - INFO - Updating all Prometheus metrics...
+2025-08-06 12:32:17,780 - src.utils.prometheus_metrics - INFO - Collected 20 database metrics
+2025-08-06 12:32:17,880 - src.utils.prometheus_metrics - ERROR - Error collecting MLflow metrics: 'metrics.processing_time_ms'
+2025-08-06 12:32:17,880 - src.utils.prometheus_metrics - INFO - Collected 12 MLflow metrics
+2025-08-06 12:32:17,880 - src.utils.prometheus_metrics - INFO - All Prometheus metrics updated successfully
+2025-08-06 12:32:17,880 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:32:17] "GET /api/monitoring/metrics HTTP/1.1" 200 -
+2025-08-06 12:32:17,886 - src.models.predict - INFO - Made prediction for 1 samples
+2025-08-06 12:32:17,887 - src.utils.database - INFO - Logged prediction request 26 for endpoint /api/predict
+2025-08-06 12:32:17,956 - api - INFO - Prediction made
+2025-08-06 12:32:17,959 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:32:17] "POST /api/predict HTTP/1.1" 200 -
+2025-08-06 12:32:17,964 - src.models.predict - INFO - Made prediction for 1 samples
+2025-08-06 12:32:17,965 - src.utils.database - INFO - Logged prediction request 27 for endpoint /api/predict
+2025-08-06 12:32:17,985 - api - INFO - Prediction made
+2025-08-06 12:32:17,988 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:32:17] "POST /api/predict HTTP/1.1" 200 -
+2025-08-06 12:32:17,993 - src.models.predict - INFO - Made prediction for 1 samples
+2025-08-06 12:32:17,994 - src.utils.database - INFO - Logged prediction request 28 for endpoint /api/predict
+2025-08-06 12:32:18,015 - api - INFO - Prediction made
+2025-08-06 12:32:18,018 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:32:18] "POST /api/predict HTTP/1.1" 200 -
+2025-08-06 12:32:20,028 - src.utils.prometheus_metrics - INFO - Updating all Prometheus metrics...
+2025-08-06 12:32:20,030 - src.utils.prometheus_metrics - INFO - Collected 20 database metrics
+2025-08-06 12:32:20,144 - src.utils.prometheus_metrics - ERROR - Error collecting MLflow metrics: 'metrics.processing_time_ms'
+2025-08-06 12:32:20,144 - src.utils.prometheus_metrics - INFO - Collected 12 MLflow metrics
+2025-08-06 12:32:20,144 - src.utils.prometheus_metrics - INFO - All Prometheus metrics updated successfully
+2025-08-06 12:32:20,145 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 12:32:20] "GET /api/monitoring/metrics HTTP/1.1" 200 -

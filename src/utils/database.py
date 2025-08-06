@@ -80,6 +80,18 @@ class PredictionDatabase:
             conn.commit()
             logger.info("Database tables initialized successfully")
 
+    def test_connection(self) -> bool:
+        """Test if database connection is working"""
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT 1")
+                cursor.fetchone()
+                return True
+        except Exception as e:
+            logger.error(f"Database connection test failed: {e}")
+            return False
+
     def log_prediction_request(
         self,
         endpoint: str,

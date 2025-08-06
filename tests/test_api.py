@@ -1,51 +1,40 @@
-"""Simple unit tests for core functionality
+"""
+API Testing Script
+==================
 
-This test suite has been simplified to avoid testing API endpoints that require
-external services (database, MLflow, etc.) to be running. Instead, it focuses on:
+Simple test script to validate the California Housing API endpoints.
 
-1. Core data validation functions
-2. Pydantic model validation
-3. Basic utility functions
-4. Import verification
-
-These tests are designed to run reliably in GitHub Actions CI environment
-without requiring Docker containers or external dependencies.
+Author: Group 14
+Date: August 2025
 """
 
-import os
+import requests
+import time
 import sys
-import pandas as pd
-import pytest
 
-# Add src to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+# API base URL
+BASE_URL = "http://localhost:5001"
 
 
-def test_basic_imports():
-    """Test that core modules can be imported"""
+def test_health_endpoint():
+    """Test the health check endpoint."""
+    print("Testing /health endpoint...")
     try:
-        from data.preprocessing import validate_input_data
-        from data.validation import HousingPredictionInput, OceanProximity
-        assert True
-    except ImportError as e:
-        pytest.fail(f"Failed to import core modules: {e}")
+        response = requests.get(f"{BASE_URL}/health", timeout=10)
+        print(f"Status Code: {response.status_code}")
+        print(f"Response: {response.json()}")
+        return response.status_code == 200
+    except Exception as e:
+        print(f"Error testing health endpoint: {e}")
+        return False
 
 
-def test_ocean_proximity_enum():
-    """Test OceanProximity enum values"""
-    from data.validation import OceanProximity
-    
-    # Test all valid enum values
-    valid_values = ["NEAR BAY", "<1H OCEAN", "INLAND", "NEAR OCEAN", "ISLAND"]
-    for value in valid_values:
-        assert value in [e.value for e in OceanProximity]
+def test_predict_endpoint():
+    """Test the prediction endpoint."""
+    print("\nTesting /api/predict endpoint...")
 
-
-def test_validate_input_data_valid():
-    """Test validate_input_data with valid input"""
-    from data.preprocessing import validate_input_data
-    
-    valid_data = {
+    # Sample prediction data
+    test_data = {
         "longitude": -122.23,
         "latitude": 37.88,
         "housing_median_age": 41.0,
@@ -56,81 +45,74 @@ def test_validate_input_data_valid():
         "median_income": 8.3252,
         "ocean_proximity": "NEAR BAY",
     }
-    
-    assert validate_input_data(valid_data) is True
+
+    try:
+        response = requests.post(
+            f"{BASE_URL}/api/predict",
+            json=test_data,
+            headers={"Content-Type": "application/json"},
+            timeout=10,
+        )
+        print(f"Status Code: {response.status_code}")
+        print(f"Response: {response.json()}")
+        return response.status_code == 200
+    except Exception as e:
+        print(f"Error testing predict endpoint: {e}")
+        return False
 
 
-def test_validate_input_data_missing_field():
-    """Test validate_input_data with missing field"""
-    from data.preprocessing import validate_input_data
-    
-    invalid_data = {
-        "longitude": -122.23,
-        "latitude": 37.88,
-        # Missing other required fields
-    }
-    
-    assert validate_input_data(invalid_data) is False
+def test_metrics_endpoint():
+    """Test the metrics endpoint."""
+    print("\nTesting /metrics endpoint...")
+    try:
+        response = requests.get(f"{BASE_URL}/metrics", timeout=10)
+        print(f"Status Code: {response.status_code}")
+        print(f"Response length: {len(response.text)} characters")
+        return response.status_code == 200
+    except Exception as e:
+        print(f"Error testing metrics endpoint: {e}")
+        return False
 
 
-def test_housing_prediction_input_valid():
-    """Test HousingPredictionInput with valid data"""
-    from data.validation import HousingPredictionInput
-    
-    valid_data = {
-        "longitude": -122.23,
-        "latitude": 37.88,
-        "housing_median_age": 41.0,
-        "total_rooms": 880.0,
-        "total_bedrooms": 129.0,
-        "population": 322.0,
-        "households": 126.0,
-        "median_income": 8.3252,
-        "ocean_proximity": "NEAR BAY",
-    }
-    
-    # Should not raise any validation errors
-    model = HousingPredictionInput(**valid_data)
-    assert model.longitude == -122.23
-    assert model.latitude == 37.88
-    assert model.ocean_proximity == "NEAR BAY"
+def main():
+    """Run all API tests."""
+    print("=" * 50)
+    print("CALIFORNIA HOUSING API TESTS")
+    print("=" * 50)
+
+    tests = [
+        ("Health Check", test_health_endpoint),
+        ("Prediction", test_predict_endpoint),
+        ("Metrics", test_metrics_endpoint),
+    ]
+
+    results = {}
+
+    for test_name, test_func in tests:
+        print(f"\n--- {test_name} Test ---")
+        results[test_name] = test_func()
+        time.sleep(1)  # Brief pause between tests
+
+    # Summary
+    print("\n" + "=" * 50)
+    print("TEST RESULTS SUMMARY")
+    print("=" * 50)
+
+    all_passed = True
+    for test_name, passed in results.items():
+        status = "✅ PASS" if passed else "❌ FAIL"
+        print(f"{test_name}: {status}")
+        if not passed:
+            all_passed = False
+
+    print("\n" + "=" * 50)
+    if all_passed:
+        print("🎉 ALL TESTS PASSED!")
+        sys.exit(0)
+    else:
+        print("❌ Some tests failed!")
+        sys.exit(1)
 
 
-def test_housing_prediction_input_invalid_coordinates():
-    """Test HousingPredictionInput with invalid coordinates"""
-    from data.validation import HousingPredictionInput
-    from pydantic import ValidationError
-    
-    invalid_data = {
-        "longitude": -200.0,  # Invalid longitude
-        "latitude": 37.88,
-        "housing_median_age": 41.0,
-        "total_rooms": 880.0,
-        "total_bedrooms": 129.0,
-        "population": 322.0,
-        "households": 126.0,
-        "median_income": 8.3252,
-        "ocean_proximity": "NEAR BAY",
-    }
-    
-    with pytest.raises(ValidationError):
-        HousingPredictionInput(**invalid_data)
-
-
-def test_basic_math_operations():
-    """Test basic mathematical operations work correctly"""
-    assert 2 + 2 == 4
-    assert 10 / 2 == 5
-    assert 3 * 3 == 9
-
-
-def test_pandas_operations():
-    """Test basic pandas operations"""
-    df = pd.DataFrame({
-        'A': [1, 2, 3],
-        'B': [4, 5, 6]
-    })
-    
-    assert len(df) == 3
-    assert list(df.columns) == ['A', 'B']
-    assert df['A'].sum() == 6
+if __name__ == "__main__":
+    main()

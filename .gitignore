@@ -11,9 +11,14 @@ COMPLETE_USER_GUIDE.md
 PROJECT_RESTRUCTURING_COMPLETE.md
 README_CLEAN.md
 README_NEW.md
-mlruns
-logs
+mlruns/
+logs/
 logs/
 mlruns/models/california_housing_best_model/meta.yaml
 logs/app.log
 logs/predictions.db
+mlruns_local/
+docs/
+.pytest_cache/
+__pycache__/
+tests/

@@ -39,6 +39,7 @@ from src.utils.mlflow_tracking import (
     get_experiment_tracker,
     initialize_mlflow_tracking
 )
+from src.utils.prometheus_metrics import prometheus_metrics
 
 # Initialize Flask app
 app = Flask(__name__, template_folder="templates")
@@ -301,6 +302,21 @@ housing_api_model_loaded {1 if model is not None else 0}
 """
 
     return metrics, 200, {'Content-Type': 'text/plain; version=0.0.4; charset=utf-8'}
+
+
+@app.route("/api/monitoring/metrics")
+def get_comprehensive_prometheus_metrics():
+    """Comprehensive Prometheus metrics endpoint with full monitoring data"""
+    if not api_config.get("monitoring.enable_metrics", True):
+        return "# Metrics disabled\n", 404, {'Content-Type': 'text/plain'}
+
+    try:
+        # Get comprehensive metrics from our collector
+        metrics_output = prometheus_metrics.get_metrics_output()
+        return metrics_output, 200, {'Content-Type': 'text/plain; version=0.0.4; charset=utf-8'}
+    except Exception as e:
+        logger.error(f"Error generating comprehensive metrics: {e}")
+        return f"# Error generating metrics: {str(e)}\n", 500, {'Content-Type': 'text/plain'}
 
 
 @app.route("/api/model/info")
@@ -631,6 +647,18 @@ def predict():
         metrics_collector.record_metric("prediction_count", 1)
         metrics_collector.record_metric("prediction_value", prediction)
 
+        # Record Prometheus metrics
+        try:
+            prometheus_metrics.record_prediction_metric(
+                endpoint="/api/predict",
+                status_code=200,
+                processing_time=processing_time / 1000.0,  # Convert to seconds
+                prediction_value=prediction,
+                input_data=prediction_input
+            )
+        except Exception as e:
+            logger.error(f"Error recording Prometheus metrics: {e}")
+
         response = PredictionResponse(
             prediction=prediction,
             model_version=model_version,
@@ -673,6 +701,19 @@ def predict():
 
         processing_time = (time.time() - start_time_pred) * 1000
         performance_monitor.record_request(processing_time, 400)
+
+        # Record error in Prometheus metrics
+        try:
+            prometheus_metrics.record_prediction_metric(
+                endpoint="/api/predict",
+                status_code=400,
+                processing_time=processing_time / 1000.0,
+                prediction_value=0,
+                input_data=request.get_json() or {}
+            )
+        except Exception as prom_e:
+            logger.error(f"Error recording Prometheus error metrics: {prom_e}")
+
         return jsonify(error_response.model_dump()), 400
 
     except Exception as e:
@@ -690,6 +731,19 @@ def predict():
 
         processing_time = (time.time() - start_time_pred) * 1000
         performance_monitor.record_request(processing_time, 500)
+
+        # Record error in Prometheus metrics
+        try:
+            prometheus_metrics.record_prediction_metric(
+                input_data=request.get_json() or {},
+                prediction=0,
+                processing_time=processing_time / 1000.0,
+                endpoint="/api/predict",
+                status="server_error"
+            )
+        except Exception as prom_e:
+            logger.error(f"Error recording Prometheus error metrics: {prom_e}")
+
         return jsonify(error_response.model_dump()), 500
 
 

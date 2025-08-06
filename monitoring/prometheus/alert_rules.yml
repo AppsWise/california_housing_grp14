@@ -1,0 +1,78 @@
+groups:
+  - name: housing_api_alerts
+    rules:
+      - alert: HighErrorRate
+        expr: housing_api_error_rate_percent{time_window="5m"} > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value }}% over the last 5 minutes"
+
+      - alert: SlowProcessing
+        expr: histogram_quantile(0.95, rate(housing_api_processing_time_seconds_bucket[5m])) > 1.0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow API processing detected"
+          description: "95th percentile processing time is {{ $value }}s"
+
+      - alert: LowPredictionVolume
+        expr: rate(housing_api_predictions_total[10m]) * 60 < 1
+        for: 5m
+        labels:
+          severity: info
+        annotations:
+          summary: "Low prediction volume"
+          description: "Prediction rate is {{ $value }} predictions/minute"
+
+      - alert: HighPredictionVolume
+        expr: rate(housing_api_predictions_total[5m]) * 60 > 100
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High prediction volume detected"
+          description: "Prediction rate is {{ $value }} predictions/minute"
+
+      - alert: DatabaseGrowthHigh
+        expr: increase(housing_api_database_size_bytes[1h]) > 1048576  # 1MB growth per hour
+        for: 10m
+        labels:
+          severity: info
+        annotations:
+          summary: "High database growth rate"
+          description: "Database has grown {{ $value }} bytes in the last hour"
+
+  - name: mlflow_alerts
+    rules:
+      - alert: MLflowExperimentIssue
+        expr: increase(housing_api_mlflow_runs_total[1h]) < 1
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "No new MLflow runs detected"
+          description: "No MLflow runs have been logged in the past hour"
+
+  - name: system_alerts
+    rules:
+      - alert: APIDown
+        expr: up{job="housing-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Housing API is down"
+          description: "The housing prediction API has been down for more than 1 minute"
+
+      - alert: PrometheusDown
+        expr: up{job="prometheus"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Prometheus is down"
+          description: "Prometheus monitoring has been down for more than 1 minute"
