@@ -2,7 +2,7 @@
 # Optimized for production deployment with minimal image size
 
 # Build stage
-FROM python:3.11-slim as builder
+FROM python:3.11-slim AS builder
 
 # Set build arguments
 ARG BUILD_DATE
@@ -26,6 +26,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
@@ -34,18 +35,25 @@ COPY requirements.txt .
 # Create virtual environment and install dependencies
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
+
+# Install dependencies with optimizations for different architectures
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir --prefer-binary -r requirements.txt
 
 # Production stage
-FROM python:3.11-slim as production
+FROM python:3.11-slim AS production
+
+# Install curl for health checks
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy virtual environment from builder stage
 COPY --from=builder /opt/venv /opt/venv
 
 # Set environment variables
 ENV PATH="/opt/venv/bin:$PATH" \
-    PYTHONPATH="/app:$PYTHONPATH" \
+    PYTHONPATH="/app:/app/src" \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PORT=5001 \

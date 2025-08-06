@@ -27,19 +27,46 @@ jobs:
     - name: Clean up any existing images
       run: |
         # Remove any cached images that might cause manifest issues
-        docker system prune -f
+        docker system prune -f || true
         docker image prune -a -f || true
+        # Remove any problematic cached images
+        docker rmi svgreatest/california-housing-api:latest || true
+        docker rmi california-housing:latest || true
+        echo "Docker cleanup completed"
     
     - name: Verify base image availability
       run: |
         # Check if the base image supports required platforms
         echo "Checking python:3.11-slim availability for multiple platforms..."
-        docker buildx imagetools inspect python:3.11-slim || echo "Base image inspection failed, but continuing..."
+        docker buildx imagetools inspect python:3.11-slim
+        echo "Checking available platforms:"
+        docker buildx imagetools inspect python:3.11-slim --format "{{json .Manifest}}" | jq -r '.manifests[].platform | "\(.os)/\(.architecture)"'
+        
+        # Pre-pull base image for both platforms to cache
+        echo "Pre-pulling base image for both platforms..."
+        docker buildx build --platform linux/amd64,linux/arm64 --build-arg BUILDKIT_INLINE_CACHE=1 - <<EOF
+        FROM python:3.11-slim
+        RUN echo "Base image cached for multi-platform"
+        EOF
     
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
       with:
+        version: latest
+        driver: docker-container
+        driver-opts: |
+          network=host
         platforms: linux/amd64,linux/arm64
+        install: true
+    
+    - name: Verify Buildx configuration
+      run: |
+        echo "Buildx version:"
+        docker buildx version
+        echo "Buildx instances:"
+        docker buildx ls
+        echo "Current builder platforms:"
+        docker buildx inspect --bootstrap
     
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
@@ -79,13 +106,13 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
-        no-cache: false
-        pull: true
+        provenance: false
+        sbom: false
+        outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=California Housing MLOps API
         build-args: |
           BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
           VCS_REF=${{ github.sha }}
           VERSION=latest
-      continue-on-error: false
       
     - name: Fallback build for AMD64 only (if multi-platform fails)
       if: failure()

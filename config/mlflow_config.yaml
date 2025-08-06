@@ -1,0 +1,67 @@
+# MLflow Configuration for California Housing API
+# =============================================
+
+# MLflow Tracking Server Configuration
+mlflow:
+  enabled: true
+  tracking_uri: "http://localhost:5000"
+  registry_uri: null  # Uses tracking_uri if not specified
+  
+  # Model Configuration
+  model:
+    name: "california_housing_best_model"
+    stage: "Production"  # Production, Staging, Archived, None
+    fallback_path: "models/model.pkl"
+    reload_interval: 3600  # seconds
+    
+  # Experiment Tracking
+  experiment:
+    name: "california_housing_api"
+    auto_log: true
+    batch_size: 10  # Number of predictions to batch before logging
+    
+  # Model Registry Settings
+  registry:
+    auto_transition: false  # Auto-transition to Production
+    require_approval: true
+    backup_models: true
+    
+  # Logging Configuration
+  logging:
+    log_predictions: true
+    log_performance: true
+    log_model_metrics: true
+    retention_days: 90
+    
+  # Performance Monitoring
+  monitoring:
+    track_drift: true
+    alert_thresholds:
+      response_time_ms: 1000
+      error_rate_percent: 5.0
+      prediction_deviation_percent: 20.0
+    
+# API Configuration with MLflow Integration
+api:
+  server:
+    host: "0.0.0.0"
+    port: 5001
+    debug: false
+    
+  # Model Loading Strategy
+  model_loading:
+    prefer_mlflow: true
+    fallback_to_file: true
+    validate_model: true
+    
+  # Health Checks
+  health_checks:
+    model_loaded: true
+    mlflow_connection: true
+    model_registry_access: true
+    
+  # Monitoring
+  monitoring:
+    enable_metrics: true
+    prometheus_enabled: true
+    grafana_enabled: true

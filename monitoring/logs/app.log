@@ -119,3 +119,58 @@ details
 2025-08-04 11:49:34,938 - app_enhanced - INFO - Batch prediction completed: 2 predictions (processing time: 0.004s)
 2025-08-04 11:49:34,942 - app_enhanced - INFO - Health check completed: healthy
 2025-08-04 11:49:34,944 - app_enhanced - INFO - Manual retrain triggered via API. Reason: manual_api_trigger
+2025-08-06 06:34:37,626 - src.utils.monitoring - INFO - Registered health check: disk_space
+2025-08-06 06:34:37,626 - src.utils.monitoring - INFO - Registered health check: memory_usage
+2025-08-06 06:34:37,626 - src.utils.monitoring - INFO - Registered health check: cpu_usage
+2025-08-06 06:34:37,627 - src.utils.monitoring - INFO - Registered health check: model_loaded
+2025-08-06 06:34:37,627 - src.utils.monitoring - INFO - Registered health check: database_connection
+2025-08-06 06:34:37,627 - src.utils.monitoring - INFO - Registered health check: mlflow_connection
+2025-08-06 06:34:37,627 - root - INFO - Initializing California Housing API...
+2025-08-06 06:34:37,628 - src.utils.mlflow_tracking - INFO - MLflow Model Registry initialized with tracking URI: http://localhost:5002
+2025-08-06 06:34:37,816 - src.utils.mlflow_tracking - INFO - MLflow Experiment Tracker initialized for experiment: california_housing_api
+2025-08-06 06:34:37,816 - src.utils.mlflow_tracking - INFO - MLflow tracking components initialized successfully
+2025-08-06 06:34:37,816 - root - INFO - MLflow tracking components initialized successfully
+2025-08-06 06:34:37,816 - src.models.predict - INFO - MLflow registry initialized for model loading
+2025-08-06 06:34:37,838 - src.utils.mlflow_tracking - WARNING - No model in Production stage, using latest version: 1
+2025-08-06 06:34:39,008 - src.utils.mlflow_tracking - INFO - Loaded model california_housing_best_model version 1 from registry
+2025-08-06 06:34:39,008 - src.models.predict - INFO - Model loaded from MLflow registry: california_housing_best_model version 1 (stage: None)
+2025-08-06 06:34:39,027 - src.utils.mlflow_tracking - WARNING - No model in Production stage, using latest version: 1
+2025-08-06 06:34:39,038 - src.utils.mlflow_tracking - WARNING - No model in Staging stage, using latest version: 1
+2025-08-06 06:34:39,047 - src.utils.mlflow_tracking - WARNING - No model in Archived stage, using latest version: 1
+2025-08-06 06:34:39,047 - api - INFO - Model loaded
+2025-08-06 06:34:39,047 - root - INFO - Model loaded successfully: california_housing_best_model
+2025-08-06 06:34:39,048 - src.utils.database - INFO - Database tables initialized successfully
+2025-08-06 06:34:39,048 - src.utils.database - INFO - Initialized prediction database at logs/predictions.db
+2025-08-06 06:34:39,048 - root - INFO - Database initialized successfully
+2025-08-06 06:34:39,048 - root - INFO - California Housing API initialized successfully
+2025-08-06 06:34:39,050 - root - INFO - Starting California Housing API on 0.0.0.0:5001
+2025-08-06 06:34:39,050 - root - INFO - Debug mode: False
+2025-08-06 06:34:39,050 - root - INFO - Model path: models/model.pkl
+2025-08-06 06:34:39,060 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.102:5001
+2025-08-06 06:34:39,060 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-06 06:34:53,670 - src.utils.mlflow_tracking - WARNING - No model in Production stage, using latest version: 1
+2025-08-06 06:34:53,678 - src.utils.mlflow_tracking - WARNING - No model in Staging stage, using latest version: 1
+2025-08-06 06:34:53,687 - src.utils.mlflow_tracking - WARNING - No model in Archived stage, using latest version: 1
+2025-08-06 06:34:53,691 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 06:34:53] "GET /api/model/info HTTP/1.1" 200 -
+2025-08-06 06:36:10,986 - src.utils.mlflow_tracking - WARNING - No model in Production stage, using latest version: 1
+2025-08-06 06:36:10,996 - src.utils.mlflow_tracking - WARNING - No model in Staging stage, using latest version: 1
+2025-08-06 06:36:11,004 - src.utils.mlflow_tracking - WARNING - No model in Archived stage, using latest version: 1
+2025-08-06 06:36:11,006 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 06:36:11] "GET /api/mlflow/models HTTP/1.1" 200 -
+2025-08-06 06:36:21,376 - src.models.predict - INFO - Made prediction for 1 samples
+2025-08-06 06:36:21,377 - src.utils.database - INFO - Logged prediction request 3 for endpoint /api/predict
+2025-08-06 06:36:21,377 - api - INFO - Prediction made
+2025-08-06 06:36:21,380 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 06:36:21] "POST /api/predict HTTP/1.1" 200 -
+2025-08-06 06:36:30,317 - src.utils.mlflow_tracking - INFO - Model california_housing_best_model version 1 transitioned to Production
+2025-08-06 06:36:30,320 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 06:36:30] "POST /api/mlflow/models/california_housing_best_model/transition HTTP/1.1" 200 -
+2025-08-06 06:36:38,852 - src.utils.monitoring - ERROR - Health check database_connection failed: 'PredictionDatabase' object has no attribute 'test_connection'
+2025-08-06 06:36:38,887 - src.utils.mlflow_tracking - WARNING - No model in Staging stage, using latest version: 1
+2025-08-06 06:36:38,901 - src.utils.mlflow_tracking - WARNING - No model in Archived stage, using latest version: 1
+2025-08-06 06:36:38,901 - api - INFO - Health check: unhealthy
+2025-08-06 06:36:38,904 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 06:36:38] "GET /health HTTP/1.1" 200 -
+2025-08-06 06:43:02,161 - src.models.predict - INFO - Made prediction for 1 samples
+2025-08-06 06:43:02,164 - src.utils.database - INFO - Logged prediction request 4 for endpoint /api/predict
+2025-08-06 06:43:02,164 - api - INFO - Prediction made
+2025-08-06 06:43:02,168 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 06:43:02] "POST /api/predict HTTP/1.1" 200 -

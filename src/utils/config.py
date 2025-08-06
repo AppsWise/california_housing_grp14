@@ -140,6 +140,16 @@ class APIConfig(Config):
                 "version": "1.0.0",
                 "reload_interval": 3600,  # seconds
             },
+            "mlflow": {
+                "enabled": os.getenv("MLFLOW_ENABLED", "true").lower() == "true",
+                "tracking_uri": os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5002"),
+                "registry_uri": os.getenv("MLFLOW_REGISTRY_URI", None),
+                "model_name": os.getenv("MLFLOW_MODEL_NAME", "california_housing_best_model"),
+                "model_stage": os.getenv("MLFLOW_MODEL_STAGE", "Production"),
+                "experiment_name": os.getenv("MLFLOW_EXPERIMENT_NAME", "california_housing_api"),
+                "batch_size": int(os.getenv("MLFLOW_BATCH_SIZE", 10)),
+                "auto_log": os.getenv("MLFLOW_AUTO_LOG", "true").lower() == "true",
+            },
             "logging": {
                 "level": os.getenv("LOG_LEVEL", "INFO"),
                 "file": "monitoring/logs/app.log",

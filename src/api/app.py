@@ -33,6 +33,11 @@ from src.utils.monitoring import (
     performance_monitor,
 )
 from src.utils.database import PredictionDatabase
+from src.utils.mlflow_tracking import (
+    get_model_registry,
+    get_experiment_tracker,
+    initialize_mlflow_tracking
+)
 
 # Initialize Flask app
 app = Flask(__name__, template_folder="templates")
@@ -48,29 +53,80 @@ structured_logger = StructuredLogger("api")
 # Global variables
 model = None
 db_manager = None
+mlflow_registry = None
+mlflow_tracker = None
 start_time = time.time()
+prediction_batch = []  # For batching predictions to MLflow
 
 
 def load_model():
-    """Load the trained model"""
+    """Load the trained model with MLflow integration"""
     global model
 
     model_path = api_config.get("model.path", "models/model.pkl")
+    use_mlflow = api_config.get("mlflow.enabled", True)
+    model_name = api_config.get("mlflow.model_name", "california_housing_best_model")
+    model_stage = api_config.get("mlflow.model_stage", "Production")
 
     try:
         start_time_load = time.time()
-        model = HousingPredictor(model_path)
+        model = HousingPredictor(
+            model_path=model_path,
+            use_mlflow_registry=use_mlflow,
+            model_name=model_name,
+            model_stage=model_stage
+        )
         load_time = (time.time() - start_time_load) * 1000
 
+        # Get model info for logging
+        model_info = model.get_model_info()
+        
         structured_logger.log_model_load(
-            model_path=model_path,
-            model_version=api_config.get("model.version", "1.0.0"),
+            model_path=model_info.get("model_metadata", {}).get("model_uri", model_path),
+            model_version=model_info.get("model_metadata", {}).get("version", "unknown"),
             load_time=load_time,
         )
 
+        logger.info(f"Model loaded successfully: {model_info.get('model_metadata', {}).get('name', 'unknown')}")
         return True
     except Exception as e:
-        logger.error(f"Failed to load model from {model_path}: {e}")
+        logger.error(f"Failed to load model: {e}")
+        return False
+
+
+def initialize_mlflow():
+    """Initialize MLflow tracking components"""
+    global mlflow_registry, mlflow_tracker
+
+    if not api_config.get("mlflow.enabled", True):
+        logger.info("MLflow integration disabled")
+        return True
+
+    try:
+        # Initialize MLflow tracking
+        success = initialize_mlflow_tracking()
+        if success:
+            mlflow_registry = get_model_registry()
+            mlflow_tracker = get_experiment_tracker()
+            logger.info("MLflow tracking components initialized successfully")
+        return success
+    except Exception as e:
+        logger.error(f"Failed to initialize MLflow: {e}")
+        return False
+
+
+def check_mlflow_connection():
+    """Health check for MLflow connection"""
+    if not api_config.get("mlflow.enabled", True):
+        return True
+    
+    try:
+        if mlflow_registry:
+            # Try to list models to check connection
+            mlflow_registry.list_registered_models()
+            return True
+        return False
+    except Exception:
         return False
 
 
@@ -103,11 +159,16 @@ def check_database_connection():
 
 health_checker.register_check("model_loaded", check_model_loaded)
 health_checker.register_check("database_connection", check_database_connection)
+health_checker.register_check("mlflow_connection", check_mlflow_connection)
 
 
 def startup():
     """Initialize application on startup"""
     logger.info("Initializing California Housing API...")
+
+    # Initialize MLflow
+    if not initialize_mlflow():
+        logger.warning("MLflow initialization failed, continuing without MLflow")
 
     # Load model
     if not load_model():
@@ -138,13 +199,18 @@ def health_check():
     health_results = health_checker.run_checks()
     uptime = time.time() - start_time
 
+    # Get model metadata if available
+    model_version = "unknown"
+    model_name = "unknown"
+    if model and hasattr(model, 'model_metadata') and model.model_metadata:
+        model_version = model.model_metadata.get("version", "unknown")
+        model_name = model.model_metadata.get("name", "unknown")
+
     response = HealthResponse(
         status=health_results["status"],
         timestamp=datetime.utcnow().isoformat(),
         model_loaded=model is not None,
-        model_version=(
-            api_config.get("model.version", "1.0.0") if model else None
-        ),
+        model_version=model_version,
         uptime_seconds=uptime,
     )
 
@@ -236,6 +302,243 @@ housing_api_model_loaded {1 if model is not None else 0}
     return metrics, 200, {'Content-Type': 'text/plain; version=0.0.4; charset=utf-8'}
 
 
+@app.route("/api/model/info")
+def get_model_info():
+    """Get current model information"""
+    start_time_info = time.time()
+
+    try:
+        if model is None:
+            error_response = ErrorResponse(
+                error="Model Not Available",
+                message="No model loaded",
+                timestamp=datetime.utcnow().isoformat(),
+            )
+            return jsonify(error_response.model_dump()), 503
+
+        model_info = model.get_model_info()
+        
+        response = {
+            "model_info": model_info,
+            "timestamp": datetime.utcnow().isoformat(),
+            "processing_time_ms": (time.time() - start_time_info) * 1000
+        }
+
+        performance_monitor.record_request((time.time() - start_time_info) * 1000, 200)
+        return jsonify(response), 200
+
+    except Exception as e:
+        error_response = ErrorResponse(
+            error="Model Info Error",
+            message=f"Error retrieving model info: {str(e)}",
+            timestamp=datetime.utcnow().isoformat(),
+        )
+        performance_monitor.record_request((time.time() - start_time_info) * 1000, 500)
+        return jsonify(error_response.model_dump()), 500
+
+
+@app.route("/api/model/reload", methods=["POST"])
+def reload_model():
+    """Reload model from registry or file"""
+    start_time_reload = time.time()
+
+    try:
+        force_mlflow = request.json.get("force_mlflow", False) if request.json else False
+        
+        if model is None:
+            error_response = ErrorResponse(
+                error="Model Not Available",
+                message="No model instance available for reload",
+                timestamp=datetime.utcnow().isoformat(),
+            )
+            return jsonify(error_response.model_dump()), 503
+
+        success = model.reload_model(force_mlflow=force_mlflow)
+        
+        if success:
+            model_info = model.get_model_info()
+            response = {
+                "status": "success",
+                "message": "Model reloaded successfully",
+                "model_info": model_info,
+                "timestamp": datetime.utcnow().isoformat(),
+                "processing_time_ms": (time.time() - start_time_reload) * 1000
+            }
+            performance_monitor.record_request((time.time() - start_time_reload) * 1000, 200)
+            return jsonify(response), 200
+        else:
+            error_response = ErrorResponse(
+                error="Model Reload Failed",
+                message="Failed to reload model",
+                timestamp=datetime.utcnow().isoformat(),
+            )
+            performance_monitor.record_request((time.time() - start_time_reload) * 1000, 500)
+            return jsonify(error_response.model_dump()), 500
+
+    except Exception as e:
+        error_response = ErrorResponse(
+            error="Model Reload Error",
+            message=f"Error reloading model: {str(e)}",
+            timestamp=datetime.utcnow().isoformat(),
+        )
+        performance_monitor.record_request((time.time() - start_time_reload) * 1000, 500)
+        return jsonify(error_response.model_dump()), 500
+
+
+@app.route("/api/mlflow/models")
+def list_registered_models():
+    """List all registered models in MLflow registry"""
+    start_time_list = time.time()
+
+    if not api_config.get("mlflow.enabled", True):
+        return jsonify({"error": "MLflow integration disabled"}), 404
+
+    try:
+        if mlflow_registry is None:
+            error_response = ErrorResponse(
+                error="MLflow Not Available",
+                message="MLflow registry not initialized",
+                timestamp=datetime.utcnow().isoformat(),
+            )
+            return jsonify(error_response.model_dump()), 503
+
+        models = mlflow_registry.list_registered_models()
+        
+        response = {
+            "registered_models": models,
+            "count": len(models),
+            "timestamp": datetime.utcnow().isoformat(),
+            "processing_time_ms": (time.time() - start_time_list) * 1000
+        }
+
+        performance_monitor.record_request((time.time() - start_time_list) * 1000, 200)
+        return jsonify(response), 200
+
+    except Exception as e:
+        error_response = ErrorResponse(
+            error="MLflow Registry Error",
+            message=f"Error accessing MLflow registry: {str(e)}",
+            timestamp=datetime.utcnow().isoformat(),
+        )
+        performance_monitor.record_request((time.time() - start_time_list) * 1000, 500)
+        return jsonify(error_response.model_dump()), 500
+
+
+@app.route("/api/mlflow/models/<model_name>")
+def get_model_details(model_name: str):
+    """Get detailed information about a specific registered model"""
+    start_time_details = time.time()
+
+    if not api_config.get("mlflow.enabled", True):
+        return jsonify({"error": "MLflow integration disabled"}), 404
+
+    try:
+        if mlflow_registry is None:
+            error_response = ErrorResponse(
+                error="MLflow Not Available",
+                message="MLflow registry not initialized",
+                timestamp=datetime.utcnow().isoformat(),
+            )
+            return jsonify(error_response.model_dump()), 503
+
+        model_info = mlflow_registry.get_model_info(model_name)
+        
+        if not model_info:
+            error_response = ErrorResponse(
+                error="Model Not Found",
+                message=f"Model {model_name} not found in registry",
+                timestamp=datetime.utcnow().isoformat(),
+            )
+            return jsonify(error_response.model_dump()), 404
+
+        response = {
+            "model_details": model_info,
+            "timestamp": datetime.utcnow().isoformat(),
+            "processing_time_ms": (time.time() - start_time_details) * 1000
+        }
+
+        performance_monitor.record_request((time.time() - start_time_details) * 1000, 200)
+        return jsonify(response), 200
+
+    except Exception as e:
+        error_response = ErrorResponse(
+            error="MLflow Registry Error",
+            message=f"Error retrieving model details: {str(e)}",
+            timestamp=datetime.utcnow().isoformat(),
+        )
+        performance_monitor.record_request((time.time() - start_time_details) * 1000, 500)
+        return jsonify(error_response.model_dump()), 500
+
+
+@app.route("/api/mlflow/models/<model_name>/transition", methods=["POST"])
+def transition_model_stage(model_name: str):
+    """Transition model to a different stage"""
+    start_time_transition = time.time()
+
+    if not api_config.get("mlflow.enabled", True):
+        return jsonify({"error": "MLflow integration disabled"}), 404
+
+    try:
+        if mlflow_registry is None:
+            error_response = ErrorResponse(
+                error="MLflow Not Available",
+                message="MLflow registry not initialized",
+                timestamp=datetime.utcnow().isoformat(),
+            )
+            return jsonify(error_response.model_dump()), 503
+
+        # Parse request data
+        data = request.get_json()
+        if not data:
+            raise ValueError("No request data provided")
+
+        version = data.get("version")
+        stage = data.get("stage")
+        archive_existing = data.get("archive_existing", True)
+
+        if not version or not stage:
+            error_response = ErrorResponse(
+                error="Invalid Request",
+                message="Both 'version' and 'stage' are required",
+                timestamp=datetime.utcnow().isoformat(),
+            )
+            return jsonify(error_response.model_dump()), 400
+
+        success = mlflow_registry.transition_model_stage(
+            model_name, version, stage, archive_existing
+        )
+
+        if success:
+            response = {
+                "status": "success",
+                "message": f"Model {model_name} version {version} transitioned to {stage}",
+                "model_name": model_name,
+                "version": version,
+                "stage": stage,
+                "timestamp": datetime.utcnow().isoformat(),
+                "processing_time_ms": (time.time() - start_time_transition) * 1000
+            }
+            performance_monitor.record_request((time.time() - start_time_transition) * 1000, 200)
+            return jsonify(response), 200
+        else:
+            error_response = ErrorResponse(
+                error="Transition Failed",
+                message=f"Failed to transition model {model_name} to {stage}",
+                timestamp=datetime.utcnow().isoformat(),
+            )
+            performance_monitor.record_request((time.time() - start_time_transition) * 1000, 500)
+            return jsonify(error_response.model_dump()), 500
+
+    except Exception as e:
+        error_response = ErrorResponse(
+            error="Model Transition Error",
+            message=f"Error transitioning model stage: {str(e)}",
+            timestamp=datetime.utcnow().isoformat(),
+        )
+        performance_monitor.record_request((time.time() - start_time_transition) * 1000, 500)
+        return jsonify(error_response.model_dump()), 500
+
+
 @app.route("/api/predict", methods=["POST"])
 def predict():
     """Single prediction endpoint"""
@@ -268,7 +571,11 @@ def predict():
 
         processing_time = (time.time() - start_time_pred) * 1000
 
-        # Log prediction
+        # Get model metadata for logging
+        model_metadata = getattr(model, 'model_metadata', {})
+        model_version = model_metadata.get('version', 'unknown')
+
+        # Log prediction to database
         if db_manager:
             try:
                 db_manager.log_prediction_request(
@@ -279,13 +586,34 @@ def predict():
                     processing_time_ms=processing_time,
                 )
             except Exception as e:
-                logger.error(f"Error logging prediction: {e}")
+                logger.error(f"Error logging prediction to database: {e}")
+
+        # Add prediction to MLflow batch for logging
+        if mlflow_tracker and api_config.get("mlflow.enabled", True):
+            try:
+                prediction_data = {
+                    "input_data": prediction_input,
+                    "prediction": prediction,
+                    "processing_time_ms": processing_time,
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "model_metadata": model_metadata
+                }
+                prediction_batch.append(prediction_data)
+                
+                # Log batch to MLflow if batch size reached
+                batch_size = api_config.get("mlflow.batch_size", 10)
+                if len(prediction_batch) >= batch_size:
+                    mlflow_tracker.log_prediction_batch(prediction_batch, model_metadata)
+                    prediction_batch.clear()
+                    
+            except Exception as e:
+                logger.error(f"Error adding prediction to MLflow batch: {e}")
 
         structured_logger.log_prediction(
             input_data=prediction_input,
             prediction=prediction,
             processing_time=processing_time,
-            model_version=api_config.get("model.version", "1.0.0"),
+            model_version=model_version,
         )
 
         # Record metrics
@@ -294,7 +622,7 @@ def predict():
 
         response = PredictionResponse(
             prediction=prediction,
-            model_version=api_config.get("model.version", "1.0.0"),
+            model_version=model_version,
             timestamp=datetime.utcnow().isoformat(),
             processing_time_ms=processing_time,
             validation_warnings=[],
@@ -388,7 +716,11 @@ def predict_batch():
 
         processing_time = (time.time() - start_time_batch) * 1000
 
-        # Log batch prediction
+        # Get model metadata for logging
+        model_metadata = getattr(model, 'model_metadata', {})
+        model_version = model_metadata.get('version', 'unknown')
+
+        # Log batch prediction to database
         if db_manager:
             try:
                 for i, pred_input in enumerate(validated_input.predictions):
@@ -400,7 +732,27 @@ def predict_batch():
                         processing_time_ms=processing_time / len(predictions),
                     )
             except Exception as e:
-                logger.error(f"Error logging batch prediction: {e}")
+                logger.error(f"Error logging batch prediction to database: {e}")
+
+        # Log batch to MLflow
+        if mlflow_tracker and api_config.get("mlflow.enabled", True):
+            try:
+                batch_data = []
+                for i, pred_input in enumerate(validated_input.predictions):
+                    prediction_data = {
+                        "input_data": pred_input.model_dump(),
+                        "prediction": predictions[i],
+                        "processing_time_ms": processing_time / len(predictions),
+                        "timestamp": datetime.utcnow().isoformat(),
+                        "model_metadata": model_metadata
+                    }
+                    batch_data.append(prediction_data)
+                
+                # Log immediately for batch predictions
+                mlflow_tracker.log_prediction_batch(batch_data, model_metadata)
+                    
+            except Exception as e:
+                logger.error(f"Error logging batch prediction to MLflow: {e}")
 
         # Record metrics
         metrics_collector.record_metric(
@@ -410,7 +762,7 @@ def predict_batch():
         response = BatchPredictionResponse(
             predictions=predictions,
             count=len(predictions),
-            model_version=api_config.get("model.version", "1.0.0"),
+            model_version=model_version,
             timestamp=datetime.utcnow().isoformat(),
             processing_time_ms=processing_time,
             validation_warnings=[],

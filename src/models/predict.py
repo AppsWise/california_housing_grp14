@@ -1,42 +1,161 @@
 """
-Model prediction and inference utilities
+Model prediction and inference utilities with MLflow integration
 """
 
 import pickle
 import numpy as np
 import pandas as pd
-from typing import Union, List, Dict, Any
+from typing import Union, List, Dict, Any, Optional, Tuple
 import logging
+from pathlib import Path
+import sys
+
+# Add project root to Python path for imports
+project_root = Path(__file__).parent.parent.parent
+sys.path.append(str(project_root))
+
+from src.utils.mlflow_tracking import get_model_registry, MLflowModelRegistry
 
 logger = logging.getLogger(__name__)
 
 
 class HousingPredictor:
-    """California Housing Price Predictor"""
+    """California Housing Price Predictor with MLflow Registry Integration"""
 
-    def __init__(self, model_path: str = "models/model.pkl"):
+    def __init__(self, 
+                 model_path: str = "models/model.pkl",
+                 use_mlflow_registry: bool = True,
+                 model_name: str = "california_housing_best_model",
+                 model_stage: str = "Production"):
         """
         Initialize predictor with trained model
 
         Args:
-            model_path: Path to trained model file
+            model_path: Path to trained model file (fallback if MLflow fails)
+            use_mlflow_registry: Whether to load model from MLflow registry
+            model_name: Name of model in MLflow registry
+            model_stage: Stage of model to load (Production, Staging, etc.)
         """
         self.model_path = model_path
+        self.use_mlflow_registry = use_mlflow_registry
+        self.model_name = model_name
+        self.model_stage = model_stage
         self.model = None
+        self.model_metadata = None
+        self.mlflow_registry = None
+        
+        # Initialize MLflow registry if enabled
+        if self.use_mlflow_registry:
+            try:
+                self.mlflow_registry = get_model_registry()
+                logger.info("MLflow registry initialized for model loading")
+            except Exception as e:
+                logger.warning(f"Failed to initialize MLflow registry: {e}")
+                self.use_mlflow_registry = False
+        
         self.load_model()
 
-    def load_model(self):
-        """Load trained model from file"""
+    def load_model(self) -> bool:
+        """
+        Load trained model from MLflow registry or file
+        
+        Returns:
+            True if model loaded successfully, False otherwise
+        """
+        # Try loading from MLflow registry first
+        if self.use_mlflow_registry and self.mlflow_registry:
+            try:
+                model, metadata = self.mlflow_registry.load_model_from_registry(
+                    self.model_name, self.model_stage
+                )
+                self.model = model
+                self.model_metadata = metadata
+                
+                logger.info(f"Model loaded from MLflow registry: {self.model_name} "
+                           f"version {metadata['version']} (stage: {metadata['stage']})")
+                return True
+                
+            except Exception as e:
+                logger.warning(f"Failed to load model from MLflow registry: {e}")
+                logger.info("Falling back to local model file")
+        
+        # Fallback to loading from local file
         try:
             with open(self.model_path, "rb") as f:
                 self.model = pickle.load(f)
-            logger.info(f"Model loaded successfully from {self.model_path}")
+            
+            # Create basic metadata for local model
+            self.model_metadata = {
+                "name": "local_model",
+                "version": "file_based",
+                "stage": "Local",
+                "model_uri": self.model_path,
+                "source": "local_file"
+            }
+            
+            logger.info(f"Model loaded successfully from local file: {self.model_path}")
+            return True
+            
         except FileNotFoundError:
             logger.error(f"Model file not found at {self.model_path}")
             raise
         except Exception as e:
             logger.error(f"Error loading model: {e}")
             raise
+
+    def get_model_info(self) -> Dict[str, Any]:
+        """
+        Get information about the currently loaded model
+        
+        Returns:
+            Dictionary with model information
+        """
+        if not self.model_metadata:
+            return {"error": "No model metadata available"}
+        
+        info = {
+            "model_loaded": self.model is not None,
+            "model_metadata": self.model_metadata,
+            "mlflow_enabled": self.use_mlflow_registry,
+            "model_type": str(type(self.model).__name__) if self.model else None
+        }
+        
+        # Add MLflow-specific information if available
+        if self.use_mlflow_registry and self.mlflow_registry:
+            try:
+                registry_info = self.mlflow_registry.get_model_info(self.model_name)
+                info["registry_info"] = registry_info
+            except Exception as e:
+                info["registry_error"] = str(e)
+        
+        return info
+
+    def reload_model(self, force_mlflow: bool = False) -> bool:
+        """
+        Reload model from registry or file
+        
+        Args:
+            force_mlflow: Force reload from MLflow registry even if disabled
+            
+        Returns:
+            True if reload successful, False otherwise
+        """
+        logger.info("Reloading model...")
+        
+        if force_mlflow or self.use_mlflow_registry:
+            self.use_mlflow_registry = True
+            if not self.mlflow_registry:
+                try:
+                    self.mlflow_registry = get_model_registry()
+                except Exception as e:
+                    logger.error(f"Failed to initialize MLflow registry: {e}")
+                    return False
+        
+        try:
+            return self.load_model()
+        except Exception as e:
+            logger.error(f"Failed to reload model: {e}")
+            return False
 
     def predict(
         self,
