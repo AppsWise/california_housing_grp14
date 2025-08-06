@@ -174,3 +174,201 @@ details
 2025-08-06 06:43:02,164 - src.utils.database - INFO - Logged prediction request 4 for endpoint /api/predict
 2025-08-06 06:43:02,164 - api - INFO - Prediction made
 2025-08-06 06:43:02,168 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 06:43:02] "POST /api/predict HTTP/1.1" 200 -
+2025-08-06 06:58:38,171 - src.utils.monitoring - INFO - Registered health check: disk_space
+2025-08-06 06:58:38,171 - src.utils.monitoring - INFO - Registered health check: memory_usage
+2025-08-06 06:58:38,171 - src.utils.monitoring - INFO - Registered health check: cpu_usage
+2025-08-06 06:58:38,176 - src.utils.monitoring - INFO - Registered health check: model_loaded
+2025-08-06 06:58:38,176 - src.utils.monitoring - INFO - Registered health check: database_connection
+2025-08-06 06:58:38,176 - src.utils.monitoring - INFO - Registered health check: mlflow_connection
+2025-08-06 06:58:38,176 - root - INFO - Initializing California Housing API...
+2025-08-06 06:58:38,176 - src.utils.mlflow_tracking - INFO - MLflow Model Registry initialized with tracking URI: http://localhost:5000
+2025-08-06 06:58:38,514 - src.utils.mlflow_tracking - ERROR - Error initializing MLflow tracking: API request to endpoint /api/2.0/mlflow/experiments/get-by-name failed with error code 403 != 200. Response body: ''
+2025-08-06 06:58:38,515 - root - WARNING - MLflow initialization failed, continuing without MLflow
+2025-08-06 06:58:38,515 - src.models.predict - INFO - MLflow registry initialized for model loading
+2025-08-06 06:58:38,545 - src.utils.mlflow_tracking - ERROR - Error getting latest model version for california_housing_best_model: API request to endpoint /api/2.0/mlflow/registered-models/get-latest-versions failed with error code 403 != 200. Response body: ''
+2025-08-06 06:58:38,545 - src.utils.mlflow_tracking - ERROR - Error loading model from registry: No model found for california_housing_best_model in stage Production
+2025-08-06 06:58:38,545 - src.models.predict - WARNING - Failed to load model from MLflow registry: No model found for california_housing_best_model in stage Production
+2025-08-06 06:58:38,545 - src.models.predict - INFO - Falling back to local model file
+2025-08-06 06:58:39,650 - src.models.predict - INFO - Model loaded successfully from local file: models/model.pkl
+2025-08-06 06:58:39,652 - src.utils.mlflow_tracking - ERROR - Error getting model info: API request to endpoint /api/2.0/mlflow/registered-models/get failed with error code 403 != 200. Response body: ''
+2025-08-06 06:58:39,652 - api - INFO - Model loaded
+2025-08-06 06:58:39,652 - root - INFO - Model loaded successfully: local_model
+2025-08-06 06:58:39,653 - src.utils.database - INFO - Database tables initialized successfully
+2025-08-06 06:58:39,653 - src.utils.database - INFO - Initialized prediction database at logs/predictions.db
+2025-08-06 06:58:39,653 - root - INFO - Database initialized successfully
+2025-08-06 06:58:39,653 - root - INFO - California Housing API initialized successfully
+2025-08-06 06:58:39,655 - root - INFO - Starting California Housing API on 0.0.0.0:5001
+2025-08-06 06:58:39,655 - root - INFO - Debug mode: False
+2025-08-06 06:58:39,655 - root - INFO - Model path: models/model.pkl
+2025-08-06 07:00:01,453 - src.utils.monitoring - INFO - Registered health check: disk_space
+2025-08-06 07:00:01,453 - src.utils.monitoring - INFO - Registered health check: memory_usage
+2025-08-06 07:00:01,453 - src.utils.monitoring - INFO - Registered health check: cpu_usage
+2025-08-06 07:00:01,454 - src.utils.monitoring - INFO - Registered health check: model_loaded
+2025-08-06 07:00:01,454 - src.utils.monitoring - INFO - Registered health check: database_connection
+2025-08-06 07:00:01,454 - src.utils.monitoring - INFO - Registered health check: mlflow_connection
+2025-08-06 07:00:01,454 - root - INFO - Initializing California Housing API...
+2025-08-06 07:00:01,455 - src.utils.mlflow_tracking - INFO - MLflow Model Registry initialized with tracking URI: http://localhost:5000
+2025-08-06 07:00:01,782 - src.utils.mlflow_tracking - ERROR - Error initializing MLflow tracking: API request to endpoint /api/2.0/mlflow/experiments/get-by-name failed with error code 403 != 200. Response body: ''
+2025-08-06 07:00:01,782 - root - WARNING - MLflow initialization failed, continuing without MLflow
+2025-08-06 07:00:01,782 - src.models.predict - INFO - MLflow registry initialized for model loading
+2025-08-06 07:00:01,808 - src.utils.mlflow_tracking - ERROR - Error getting latest model version for california_housing_best_model: API request to endpoint /api/2.0/mlflow/registered-models/get-latest-versions failed with error code 403 != 200. Response body: ''
+2025-08-06 07:00:01,809 - src.utils.mlflow_tracking - ERROR - Error loading model from registry: No model found for california_housing_best_model in stage Production
+2025-08-06 07:00:01,809 - src.models.predict - WARNING - Failed to load model from MLflow registry: No model found for california_housing_best_model in stage Production
+2025-08-06 07:00:01,809 - src.models.predict - INFO - Falling back to local model file
+2025-08-06 07:00:02,771 - src.models.predict - INFO - Model loaded successfully from local file: models/model.pkl
+2025-08-06 07:00:02,773 - src.utils.mlflow_tracking - ERROR - Error getting model info: API request to endpoint /api/2.0/mlflow/registered-models/get failed with error code 403 != 200. Response body: ''
+2025-08-06 07:00:02,774 - api - INFO - Model loaded
+2025-08-06 07:00:02,774 - root - INFO - Model loaded successfully: local_model
+2025-08-06 07:00:02,775 - src.utils.database - INFO - Database tables initialized successfully
+2025-08-06 07:00:02,775 - src.utils.database - INFO - Initialized prediction database at logs/predictions.db
+2025-08-06 07:00:02,775 - root - INFO - Database initialized successfully
+2025-08-06 07:00:02,775 - root - INFO - California Housing API initialized successfully
+2025-08-06 07:00:02,777 - root - INFO - Starting California Housing API on 0.0.0.0:5001
+2025-08-06 07:00:02,777 - root - INFO - Debug mode: False
+2025-08-06 07:00:02,777 - root - INFO - Model path: models/model.pkl
+2025-08-06 07:00:02,785 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.102:5001
+2025-08-06 07:00:02,786 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-06 07:00:12,109 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 07:00:12] "GET /api/logs/predictions HTTP/1.1" 200 -
+2025-08-06 07:00:18,947 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 07:00:18] "[35m[1mGET /api/logs/predictions/stats HTTP/1.1[0m" 500 -
+2025-08-06 07:01:01,572 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 07:01:01] "[35m[1mGET /api/logs/predictions/stats HTTP/1.1[0m" 500 -
+2025-08-06 07:02:37,361 - src.utils.monitoring - INFO - Registered health check: disk_space
+2025-08-06 07:02:37,361 - src.utils.monitoring - INFO - Registered health check: memory_usage
+2025-08-06 07:02:37,361 - src.utils.monitoring - INFO - Registered health check: cpu_usage
+2025-08-06 07:03:15,558 - src.utils.monitoring - INFO - Registered health check: disk_space
+2025-08-06 07:03:15,558 - src.utils.monitoring - INFO - Registered health check: memory_usage
+2025-08-06 07:03:15,558 - src.utils.monitoring - INFO - Registered health check: cpu_usage
+2025-08-06 07:03:15,562 - src.utils.monitoring - INFO - Registered health check: model_loaded
+2025-08-06 07:03:15,562 - src.utils.monitoring - INFO - Registered health check: database_connection
+2025-08-06 07:03:15,562 - src.utils.monitoring - INFO - Registered health check: mlflow_connection
+2025-08-06 07:03:15,562 - root - INFO - Initializing California Housing API...
+2025-08-06 07:03:15,563 - src.utils.mlflow_tracking - INFO - MLflow Model Registry initialized with tracking URI: http://localhost:5000
+2025-08-06 07:03:15,853 - src.utils.mlflow_tracking - ERROR - Error initializing MLflow tracking: API request to endpoint /api/2.0/mlflow/experiments/get-by-name failed with error code 403 != 200. Response body: ''
+2025-08-06 07:03:15,853 - root - WARNING - MLflow initialization failed, continuing without MLflow
+2025-08-06 07:03:15,853 - src.models.predict - INFO - MLflow registry initialized for model loading
+2025-08-06 07:03:15,885 - src.utils.mlflow_tracking - ERROR - Error getting latest model version for california_housing_best_model: API request to endpoint /api/2.0/mlflow/registered-models/get-latest-versions failed with error code 403 != 200. Response body: ''
+2025-08-06 07:03:15,885 - src.utils.mlflow_tracking - ERROR - Error loading model from registry: No model found for california_housing_best_model in stage Production
+2025-08-06 07:03:15,885 - src.models.predict - WARNING - Failed to load model from MLflow registry: No model found for california_housing_best_model in stage Production
+2025-08-06 07:03:15,885 - src.models.predict - INFO - Falling back to local model file
+2025-08-06 07:03:16,808 - src.models.predict - INFO - Model loaded successfully from local file: models/model.pkl
+2025-08-06 07:03:16,810 - src.utils.mlflow_tracking - ERROR - Error getting model info: API request to endpoint /api/2.0/mlflow/registered-models/get failed with error code 403 != 200. Response body: ''
+2025-08-06 07:03:16,810 - api - INFO - Model loaded
+2025-08-06 07:03:16,810 - root - INFO - Model loaded successfully: local_model
+2025-08-06 07:03:16,810 - src.utils.database - INFO - Database tables initialized successfully
+2025-08-06 07:03:16,810 - src.utils.database - INFO - Initialized prediction database at logs/predictions.db
+2025-08-06 07:03:16,810 - root - INFO - Database initialized successfully
+2025-08-06 07:03:16,810 - root - INFO - California Housing API initialized successfully
+2025-08-06 07:03:16,812 - root - INFO - Starting California Housing API on 0.0.0.0:5001
+2025-08-06 07:03:16,812 - root - INFO - Debug mode: False
+2025-08-06 07:03:16,812 - root - INFO - Model path: models/model.pkl
+2025-08-06 07:03:16,817 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.102:5001
+2025-08-06 07:03:16,817 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-06 07:04:11,854 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 07:04:11] "GET /api/logs/predictions/stats HTTP/1.1" 200 -
+2025-08-06 07:04:20,505 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 07:04:20] "[35m[1mGET /api/logs/predictions/recent?count=3 HTTP/1.1[0m" 500 -
+2025-08-06 07:05:42,039 - src.utils.monitoring - INFO - Registered health check: disk_space
+2025-08-06 07:05:42,039 - src.utils.monitoring - INFO - Registered health check: memory_usage
+2025-08-06 07:05:42,039 - src.utils.monitoring - INFO - Registered health check: cpu_usage
+2025-08-06 07:05:42,043 - src.utils.monitoring - INFO - Registered health check: model_loaded
+2025-08-06 07:05:42,043 - src.utils.monitoring - INFO - Registered health check: database_connection
+2025-08-06 07:05:42,043 - src.utils.monitoring - INFO - Registered health check: mlflow_connection
+2025-08-06 07:05:42,043 - root - INFO - Initializing California Housing API...
+2025-08-06 07:05:42,043 - src.utils.mlflow_tracking - INFO - MLflow Model Registry initialized with tracking URI: http://localhost:5000
+2025-08-06 07:05:42,252 - src.utils.mlflow_tracking - ERROR - Error initializing MLflow tracking: API request to endpoint /api/2.0/mlflow/experiments/get-by-name failed with error code 403 != 200. Response body: ''
+2025-08-06 07:05:42,252 - root - WARNING - MLflow initialization failed, continuing without MLflow
+2025-08-06 07:05:42,252 - src.models.predict - INFO - MLflow registry initialized for model loading
+2025-08-06 07:05:42,268 - src.utils.mlflow_tracking - ERROR - Error getting latest model version for california_housing_best_model: API request to endpoint /api/2.0/mlflow/registered-models/get-latest-versions failed with error code 403 != 200. Response body: ''
+2025-08-06 07:05:42,268 - src.utils.mlflow_tracking - ERROR - Error loading model from registry: No model found for california_housing_best_model in stage Production
+2025-08-06 07:05:42,268 - src.models.predict - WARNING - Failed to load model from MLflow registry: No model found for california_housing_best_model in stage Production
+2025-08-06 07:05:42,268 - src.models.predict - INFO - Falling back to local model file
+2025-08-06 07:05:43,135 - src.models.predict - INFO - Model loaded successfully from local file: models/model.pkl
+2025-08-06 07:05:43,137 - src.utils.mlflow_tracking - ERROR - Error getting model info: API request to endpoint /api/2.0/mlflow/registered-models/get failed with error code 403 != 200. Response body: ''
+2025-08-06 07:05:43,137 - api - INFO - Model loaded
+2025-08-06 07:05:43,137 - root - INFO - Model loaded successfully: local_model
+2025-08-06 07:05:43,138 - src.utils.database - INFO - Database tables initialized successfully
+2025-08-06 07:05:43,138 - src.utils.database - INFO - Initialized prediction database at logs/predictions.db
+2025-08-06 07:05:43,138 - root - INFO - Database initialized successfully
+2025-08-06 07:05:43,138 - root - INFO - California Housing API initialized successfully
+2025-08-06 07:05:43,140 - root - INFO - Starting California Housing API on 0.0.0.0:5001
+2025-08-06 07:05:43,140 - root - INFO - Debug mode: False
+2025-08-06 07:05:43,140 - root - INFO - Model path: models/model.pkl
+2025-08-06 07:05:43,148 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.102:5001
+2025-08-06 07:05:43,148 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-06 07:05:54,212 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 07:05:54] "GET /api/logs/predictions/recent?count=2 HTTP/1.1" 200 -
+2025-08-06 07:06:01,156 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 07:06:01] "GET /api/logs/predictions/search?longitude=-122.23&latitude=37.88 HTTP/1.1" 200 -
+2025-08-06 07:06:16,563 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 07:06:16] "GET /api/logs/predictions?limit=10&min_price=300000 HTTP/1.1" 200 -
+2025-08-06 07:06:31,982 - src.models.predict - INFO - Made prediction for 1 samples
+2025-08-06 07:06:31,983 - src.utils.database - INFO - Logged prediction request 5 for endpoint /api/predict
+2025-08-06 07:06:31,983 - api - INFO - Prediction made
+2025-08-06 07:06:31,986 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 07:06:31] "POST /api/predict HTTP/1.1" 200 -
+2025-08-06 07:06:41,998 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 07:06:41] "GET /api/logs/predictions/recent?count=1 HTTP/1.1" 200 -
+2025-08-06 08:01:12,350 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 08:01:12] "GET /api/logs/predictions?min_price=300000&hours=24 HTTP/1.1" 200 -
+2025-08-06 08:01:12,463 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 08:01:12] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-08-06 08:01:46,678 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 08:01:46] "GET / HTTP/1.1" 200 -
+2025-08-06 08:45:07,953 - src.utils.monitoring - INFO - Registered health check: disk_space
+2025-08-06 08:45:07,953 - src.utils.monitoring - INFO - Registered health check: memory_usage
+2025-08-06 08:45:07,953 - src.utils.monitoring - INFO - Registered health check: cpu_usage
+2025-08-06 08:45:07,959 - src.utils.monitoring - INFO - Registered health check: model_loaded
+2025-08-06 08:45:07,959 - src.utils.monitoring - INFO - Registered health check: database_connection
+2025-08-06 08:45:07,959 - src.utils.monitoring - INFO - Registered health check: mlflow_connection
+2025-08-06 08:45:07,959 - root - INFO - Initializing California Housing API...
+2025-08-06 08:45:07,959 - src.utils.mlflow_tracking - INFO - MLflow Model Registry initialized with tracking URI: http://localhost:5000
+2025-08-06 08:45:08,294 - src.utils.mlflow_tracking - ERROR - Error initializing MLflow tracking: API request to endpoint /api/2.0/mlflow/experiments/get-by-name failed with error code 403 != 200. Response body: ''
+2025-08-06 08:45:08,294 - root - WARNING - MLflow initialization failed, continuing without MLflow
+2025-08-06 08:45:08,294 - src.models.predict - INFO - MLflow registry initialized for model loading
+2025-08-06 08:45:08,324 - src.utils.mlflow_tracking - ERROR - Error getting latest model version for california_housing_best_model: API request to endpoint /api/2.0/mlflow/registered-models/get-latest-versions failed with error code 403 != 200. Response body: ''
+2025-08-06 08:45:08,324 - src.utils.mlflow_tracking - ERROR - Error loading model from registry: No model found for california_housing_best_model in stage Production
+2025-08-06 08:45:08,324 - src.models.predict - WARNING - Failed to load model from MLflow registry: No model found for california_housing_best_model in stage Production
+2025-08-06 08:45:08,324 - src.models.predict - INFO - Falling back to local model file
+2025-08-06 08:45:09,298 - src.models.predict - INFO - Model loaded successfully from local file: models/model.pkl
+2025-08-06 08:45:09,300 - src.utils.mlflow_tracking - ERROR - Error getting model info: API request to endpoint /api/2.0/mlflow/registered-models/get failed with error code 403 != 200. Response body: ''
+2025-08-06 08:45:09,300 - api - INFO - Model loaded
+2025-08-06 08:45:09,300 - root - INFO - Model loaded successfully: local_model
+2025-08-06 08:45:09,301 - src.utils.database - INFO - Database tables initialized successfully
+2025-08-06 08:45:09,301 - src.utils.database - INFO - Initialized prediction database at logs/predictions.db
+2025-08-06 08:45:09,301 - root - INFO - Database initialized successfully
+2025-08-06 08:45:09,301 - root - INFO - California Housing API initialized successfully
+2025-08-06 08:45:09,303 - root - INFO - Starting California Housing API on 0.0.0.0:5001
+2025-08-06 08:45:09,303 - root - INFO - Debug mode: False
+2025-08-06 08:45:09,303 - root - INFO - Model path: models/model.pkl
+2025-08-06 08:45:09,311 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.102:5001
+2025-08-06 08:45:09,311 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-06 08:45:21,122 - src.models.predict - INFO - Made prediction for 1 samples
+2025-08-06 08:45:21,123 - src.utils.database - INFO - Logged prediction request 9 for endpoint /api/predict
+2025-08-06 08:45:21,250 - api - INFO - Prediction made
+2025-08-06 08:45:21,254 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 08:45:21] "POST /api/predict HTTP/1.1" 200 -
+2025-08-06 08:46:13,316 - src.models.predict - INFO - Made prediction for 1 samples
+2025-08-06 08:46:13,318 - src.utils.database - INFO - Logged prediction request 10 for endpoint /api/predict
+2025-08-06 08:46:13,336 - api - INFO - Prediction made
+2025-08-06 08:46:13,339 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 08:46:13] "POST /api/predict HTTP/1.1" 200 -
+2025-08-06 08:47:56,603 - src.models.predict - INFO - Made prediction for 1 samples
+2025-08-06 08:47:56,605 - src.utils.database - INFO - Logged prediction request 11 for endpoint /api/predict
+2025-08-06 08:47:56,638 - api - INFO - Prediction made
+2025-08-06 08:47:56,641 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 08:47:56] "POST /api/predict HTTP/1.1" 200 -
+2025-08-06 08:47:56,645 - src.models.predict - INFO - Made prediction for 1 samples
+2025-08-06 08:47:56,646 - src.utils.database - INFO - Logged prediction request 12 for endpoint /api/predict
+2025-08-06 08:47:56,665 - api - INFO - Prediction made
+2025-08-06 08:47:56,669 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 08:47:56] "POST /api/predict HTTP/1.1" 200 -
+2025-08-06 08:47:56,674 - src.models.predict - INFO - Made prediction for 1 samples
+2025-08-06 08:47:56,675 - src.utils.database - INFO - Logged prediction request 13 for endpoint /api/predict
+2025-08-06 08:47:56,695 - api - INFO - Prediction made
+2025-08-06 08:47:56,700 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 08:47:56] "POST /api/predict HTTP/1.1" 200 -
+2025-08-06 08:48:51,060 - src.utils.monitoring - ERROR - Health check database_connection failed: 'PredictionDatabase' object has no attribute 'test_connection'
+2025-08-06 08:48:51,061 - api - INFO - Health check: unhealthy
+2025-08-06 08:48:51,063 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 08:48:51] "GET /health HTTP/1.1" 200 -
+2025-08-06 08:48:51,067 - src.models.predict - INFO - Made prediction for 1 samples
+2025-08-06 08:48:51,069 - src.utils.database - INFO - Logged prediction request 14 for endpoint /api/predict
+2025-08-06 08:48:51,100 - api - INFO - Prediction made
+2025-08-06 08:48:51,102 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 08:48:51] "POST /api/predict HTTP/1.1" 200 -
+2025-08-06 10:39:33,612 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 10:39:33] "GET / HTTP/1.1" 200 -
+2025-08-06 10:39:35,659 - werkzeug - INFO - 127.0.0.1 - - [06/Aug/2025 10:39:35] "GET /api/logs/predictions?min_price=300000&hours=24 HTTP/1.1" 200 -

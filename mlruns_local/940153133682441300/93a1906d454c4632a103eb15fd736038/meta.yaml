@@ -1,0 +1,15 @@
+artifact_uri: file:///Volumes/Development/Development/assignment/MLOps_ASS1/mlruns_local/940153133682441300/93a1906d454c4632a103eb15fd736038/artifacts
+end_time: 1754450037575
+entry_point_name: ''
+experiment_id: '940153133682441300'
+lifecycle_stage: active
+run_id: 93a1906d454c4632a103eb15fd736038
+run_name: prediction_1
+run_uuid: 93a1906d454c4632a103eb15fd736038
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1754450037544
+status: 3
+tags: []
+user_id: jeetendra

@@ -33,6 +33,7 @@ from src.utils.monitoring import (
     performance_monitor,
 )
 from src.utils.database import PredictionDatabase
+from mlflow_integration import log_prediction_to_mlflow
 from src.utils.mlflow_tracking import (
     get_model_registry,
     get_experiment_tracker,
@@ -588,7 +589,17 @@ def predict():
             except Exception as e:
                 logger.error(f"Error logging prediction to database: {e}")
 
-        # Add prediction to MLflow batch for logging
+        # Log prediction to MLflow (simple local approach)
+        try:
+            log_prediction_to_mlflow(
+                input_data=prediction_input,
+                prediction=prediction,
+                processing_time=processing_time
+            )
+        except Exception as e:
+            logger.error(f"Error logging prediction to MLflow: {e}")
+
+        # Add prediction to MLflow batch for logging (fallback to complex approach)
         if mlflow_tracker and api_config.get("mlflow.enabled", True):
             try:
                 prediction_data = {
@@ -807,6 +818,253 @@ def predict_batch():
 
         processing_time = (time.time() - start_time_batch) * 1000
         performance_monitor.record_request(processing_time, 500)
+        return jsonify(error_response.model_dump()), 500
+
+
+@app.route("/api/logs/predictions")
+def get_prediction_logs():
+    """Get prediction logs with filtering and pagination"""
+    start_time_logs = time.time()
+
+    try:
+        if db_manager is None:
+            error_response = ErrorResponse(
+                error="Database Not Available",
+                message="Database not initialized",
+                timestamp=datetime.utcnow().isoformat(),
+            )
+            return jsonify(error_response.model_dump()), 503
+
+        # Parse query parameters
+        limit = request.args.get('limit', 50, type=int)
+        offset = request.args.get('offset', 0, type=int)
+        hours = request.args.get('hours', 24, type=int)  # Last N hours
+        endpoint = request.args.get('endpoint')  # Filter by endpoint
+        min_price = request.args.get('min_price', type=float)
+        max_price = request.args.get('max_price', type=float)
+
+        # Get prediction logs with filters
+        logs = db_manager.get_prediction_logs(
+            limit=limit,
+            offset=offset,
+            hours=hours,
+            endpoint=endpoint,
+            min_price=min_price,
+            max_price=max_price
+        )
+
+        # Get total count for pagination
+        total_count = db_manager.get_prediction_count(
+            hours=hours,
+            endpoint=endpoint,
+            min_price=min_price,
+            max_price=max_price
+        )
+
+        processing_time = (time.time() - start_time_logs) * 1000
+
+        response = {
+            "logs": logs,
+            "pagination": {
+                "total_count": total_count,
+                "limit": limit,
+                "offset": offset,
+                "has_more": (offset + limit) < total_count
+            },
+            "filters": {
+                "hours": hours,
+                "endpoint": endpoint,
+                "min_price": min_price,
+                "max_price": max_price
+            },
+            "timestamp": datetime.utcnow().isoformat(),
+            "processing_time_ms": processing_time
+        }
+
+        performance_monitor.record_request(processing_time, 200)
+        return jsonify(response), 200
+
+    except Exception as e:
+        error_response = ErrorResponse(
+            error="Logs Retrieval Error",
+            message=f"Error retrieving prediction logs: {str(e)}",
+            timestamp=datetime.utcnow().isoformat(),
+        )
+        performance_monitor.record_request((time.time() - start_time_logs) * 1000, 500)
+        return jsonify(error_response.model_dump()), 500
+
+
+@app.route("/api/logs/predictions/stats")
+def get_prediction_stats():
+    """Get prediction statistics and analytics"""
+    start_time_stats = time.time()
+
+    try:
+        if db_manager is None:
+            error_response = ErrorResponse(
+                error="Database Not Available",
+                message="Database not initialized",
+                timestamp=datetime.utcnow().isoformat(),
+            )
+            return jsonify(error_response.model_dump()), 503
+
+        # Parse query parameters
+        hours = request.args.get('hours', 24, type=int)  # Last N hours
+        endpoint = request.args.get('endpoint')  # Filter by endpoint
+
+        # Get comprehensive statistics
+        stats = db_manager.get_prediction_stats(hours=hours, endpoint=endpoint)
+        
+        # Get prediction distribution by hour
+        hourly_stats = db_manager.get_hourly_prediction_stats(hours=hours)
+
+        processing_time = (time.time() - start_time_stats) * 1000
+
+        response = {
+            "statistics": stats,
+            "hourly_breakdown": hourly_stats,
+            "filters": {
+                "hours": hours,
+                "endpoint": endpoint
+            },
+            "timestamp": datetime.utcnow().isoformat(),
+            "processing_time_ms": processing_time
+        }
+
+        performance_monitor.record_request(processing_time, 200)
+        return jsonify(response), 200
+
+    except Exception as e:
+        error_response = ErrorResponse(
+            error="Stats Retrieval Error",
+            message=f"Error retrieving prediction statistics: {str(e)}",
+            timestamp=datetime.utcnow().isoformat(),
+        )
+        performance_monitor.record_request((time.time() - start_time_stats) * 1000, 500)
+        return jsonify(error_response.model_dump()), 500
+
+
+@app.route("/api/logs/predictions/recent")
+def get_recent_predictions():
+    """Get recent predictions with quick filters"""
+    start_time_recent = time.time()
+
+    try:
+        if db_manager is None:
+            error_response = ErrorResponse(
+                error="Database Not Available",
+                message="Database not initialized",
+                timestamp=datetime.utcnow().isoformat(),
+            )
+            return jsonify(error_response.model_dump()), 503
+
+        # Parse query parameters
+        count = request.args.get('count', 10, type=int)  # Number of recent predictions
+        
+        # Get recent predictions
+        recent_logs = db_manager.get_recent_predictions(limit=count)
+
+        processing_time = (time.time() - start_time_recent) * 1000
+
+        response = {
+            "recent_predictions": recent_logs,
+            "count": len(recent_logs),
+            "timestamp": datetime.utcnow().isoformat(),
+            "processing_time_ms": processing_time
+        }
+
+        performance_monitor.record_request(processing_time, 200)
+        return jsonify(response), 200
+
+    except Exception as e:
+        error_response = ErrorResponse(
+            error="Recent Predictions Error",
+            message=f"Error retrieving recent predictions: {str(e)}",
+            timestamp=datetime.utcnow().isoformat(),
+        )
+        performance_monitor.record_request((time.time() - start_time_recent) * 1000, 500)
+        return jsonify(error_response.model_dump()), 500
+
+
+@app.route("/api/logs/predictions/search")
+def search_predictions():
+    """Search predictions by input criteria"""
+    start_time_search = time.time()
+
+    try:
+        if db_manager is None:
+            error_response = ErrorResponse(
+                error="Database Not Available",
+                message="Database not initialized",
+                timestamp=datetime.utcnow().isoformat(),
+            )
+            return jsonify(error_response.model_dump()), 503
+
+        # Parse query parameters for search criteria
+        longitude = request.args.get('longitude', type=float)
+        latitude = request.args.get('latitude', type=float)
+        median_income = request.args.get('median_income', type=float)
+        housing_median_age = request.args.get('housing_median_age', type=float)
+        total_rooms = request.args.get('total_rooms', type=int)
+        total_bedrooms = request.args.get('total_bedrooms', type=int)
+        population = request.args.get('population', type=int)
+        households = request.args.get('households', type=int)
+        ocean_proximity = request.args.get('ocean_proximity')
+        
+        limit = request.args.get('limit', 20, type=int)
+
+        # Build search criteria
+        search_criteria = {}
+        if longitude is not None:
+            search_criteria['longitude'] = longitude
+        if latitude is not None:
+            search_criteria['latitude'] = latitude
+        if median_income is not None:
+            search_criteria['median_income'] = median_income
+        if housing_median_age is not None:
+            search_criteria['housing_median_age'] = housing_median_age
+        if total_rooms is not None:
+            search_criteria['total_rooms'] = total_rooms
+        if total_bedrooms is not None:
+            search_criteria['total_bedrooms'] = total_bedrooms
+        if population is not None:
+            search_criteria['population'] = population
+        if households is not None:
+            search_criteria['households'] = households
+        if ocean_proximity is not None:
+            search_criteria['ocean_proximity'] = ocean_proximity
+
+        if not search_criteria:
+            error_response = ErrorResponse(
+                error="No Search Criteria",
+                message="At least one search criterion must be provided",
+                timestamp=datetime.utcnow().isoformat(),
+            )
+            return jsonify(error_response.model_dump()), 400
+
+        # Search predictions
+        search_results = db_manager.search_predictions(search_criteria, limit=limit)
+
+        processing_time = (time.time() - start_time_search) * 1000
+
+        response = {
+            "search_results": search_results,
+            "count": len(search_results),
+            "search_criteria": search_criteria,
+            "timestamp": datetime.utcnow().isoformat(),
+            "processing_time_ms": processing_time
+        }
+
+        performance_monitor.record_request(processing_time, 200)
+        return jsonify(response), 200
+
+    except Exception as e:
+        error_response = ErrorResponse(
+            error="Search Error",
+            message=f"Error searching predictions: {str(e)}",
+            timestamp=datetime.utcnow().isoformat(),
+        )
+        performance_monitor.record_request((time.time() - start_time_search) * 1000, 500)
         return jsonify(error_response.model_dump()), 500
 
 

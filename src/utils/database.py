@@ -223,47 +223,50 @@ class PredictionDatabase:
             logger.error(f"Failed to log system metric: {e}")
             return -1
 
-    def get_prediction_stats(self, hours: int = 24) -> Dict[str, Any]:
+    def get_prediction_stats(self, hours: int = 24, endpoint: str = None) -> Dict[str, Any]:
         """Get prediction statistics for the last N hours"""
 
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
 
+                # Build base query with optional endpoint filter
+                base_filter = f"datetime(timestamp) > datetime('now', '-{hours} hours')"
+                if endpoint:
+                    base_filter += f" AND endpoint = '{endpoint}'"
+
                 # Get total predictions in last N hours
-                cursor.execute(
-                    """
+                cursor.execute(f"""
                     SELECT COUNT(*) FROM prediction_requests
-                    WHERE datetime(timestamp) > datetime('now', '-{} hours')
-                """.format(
-                        hours
-                    )
-                )
+                    WHERE {base_filter}
+                """)
                 total_predictions = cursor.fetchone()[0]
 
                 # Get successful predictions
-                cursor.execute(
-                    """
+                cursor.execute(f"""
                     SELECT COUNT(*) FROM prediction_requests
-                    WHERE datetime(timestamp) > datetime('now', '-{} hours')
-                    AND status_code = 200
-                """.format(
-                        hours
-                    )
-                )
+                    WHERE {base_filter} AND status_code = 200
+                """)
                 successful_predictions = cursor.fetchone()[0]
 
                 # Get average processing time
-                cursor.execute(
-                    """
+                cursor.execute(f"""
                     SELECT AVG(processing_time_ms) FROM prediction_requests
-                    WHERE datetime(timestamp) > datetime('now', '-{} hours')
-                    AND processing_time_ms IS NOT NULL
-                """.format(
-                        hours
-                    )
-                )
+                    WHERE {base_filter} AND processing_time_ms IS NOT NULL
+                """)
                 avg_processing_time = cursor.fetchone()[0] or 0
+
+                # Get prediction value statistics
+                cursor.execute(f"""
+                    SELECT 
+                        AVG(CAST(prediction as REAL)) as avg_prediction,
+                        MIN(CAST(prediction as REAL)) as min_prediction,
+                        MAX(CAST(prediction as REAL)) as max_prediction,
+                        COUNT(CASE WHEN prediction IS NOT NULL THEN 1 END) as predictions_with_values
+                    FROM prediction_requests
+                    WHERE {base_filter}
+                """)
+                prediction_stats = cursor.fetchone()
 
                 # Get error rate
                 error_rate = 0
@@ -277,8 +280,12 @@ class PredictionDatabase:
                 return {
                     "total_predictions": total_predictions,
                     "successful_predictions": successful_predictions,
+                    "predictions_with_values": prediction_stats[3] if prediction_stats else 0,
                     "error_rate_percent": round(error_rate, 2),
                     "avg_processing_time_ms": round(avg_processing_time, 2),
+                    "avg_prediction_value": round(prediction_stats[0], 2) if prediction_stats and prediction_stats[0] else None,
+                    "min_prediction_value": round(prediction_stats[1], 2) if prediction_stats and prediction_stats[1] else None,
+                    "max_prediction_value": round(prediction_stats[2], 2) if prediction_stats and prediction_stats[2] else None,
                     "time_window_hours": hours,
                 }
 
@@ -287,7 +294,7 @@ class PredictionDatabase:
             return {}
 
     def get_recent_predictions(self, limit: int = 100) -> List[Dict[str, Any]]:
-        """Get recent prediction requests"""
+        """Get recent prediction requests with full details"""
 
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -295,8 +302,8 @@ class PredictionDatabase:
 
                 cursor.execute(
                     """
-                    SELECT timestamp, endpoint, method, status_code, processing_time_ms,
-                           error_message
+                    SELECT id, timestamp, endpoint, method, input_data, prediction,
+                           processing_time_ms, status_code, error_message
                     FROM prediction_requests
                     ORDER BY timestamp DESC
                     LIMIT ?
@@ -306,16 +313,24 @@ class PredictionDatabase:
 
                 results = []
                 for row in cursor.fetchall():
-                    results.append(
-                        {
-                            "timestamp": row[0],
-                            "endpoint": row[1],
-                            "method": row[2],
-                            "status_code": row[3],
-                            "processing_time_ms": row[4],
-                            "error_message": row[5],
-                        }
-                    )
+                    # Parse input data JSON
+                    input_data = {}
+                    try:
+                        input_data = json.loads(row[4]) if row[4] else {}
+                    except:
+                        pass
+                    
+                    results.append({
+                        "id": row[0],
+                        "timestamp": row[1],
+                        "endpoint": row[2],
+                        "method": row[3],
+                        "input_data": input_data,
+                        "prediction": float(row[5]) if row[5] else None,
+                        "processing_time_ms": row[6],
+                        "status_code": row[7],
+                        "error_message": row[8],
+                    })
 
                 return results
 
@@ -380,3 +395,194 @@ class PredictionDatabase:
         except Exception as e:
             logger.error(f"Failed to cleanup old logs: {e}")
             return {}
+
+    def get_prediction_logs(self, limit: int = 50, offset: int = 0, hours: int = 24, 
+                          endpoint: str = None, min_price: float = None, 
+                          max_price: float = None) -> List[Dict[str, Any]]:
+        """Get prediction logs with filtering and pagination"""
+        
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                
+                # Build query with filters
+                query = """
+                    SELECT id, timestamp, endpoint, method, input_data, prediction, 
+                           processing_time_ms, status_code, error_message
+                    FROM prediction_requests
+                    WHERE datetime(timestamp) > datetime('now', '-{} hours')
+                """.format(hours)
+                
+                params = []
+                
+                if endpoint:
+                    query += " AND endpoint = ?"
+                    params.append(endpoint)
+                
+                if min_price is not None:
+                    query += " AND CAST(prediction as REAL) >= ?"
+                    params.append(min_price)
+                
+                if max_price is not None:
+                    query += " AND CAST(prediction as REAL) <= ?"
+                    params.append(max_price)
+                
+                query += " ORDER BY timestamp DESC LIMIT ? OFFSET ?"
+                params.extend([limit, offset])
+                
+                cursor.execute(query, params)
+                
+                results = []
+                for row in cursor.fetchall():
+                    # Parse input data JSON
+                    input_data = {}
+                    try:
+                        input_data = json.loads(row[4]) if row[4] else {}
+                    except:
+                        pass
+                    
+                    results.append({
+                        "id": row[0],
+                        "timestamp": row[1],
+                        "endpoint": row[2],
+                        "method": row[3],
+                        "input_data": input_data,
+                        "prediction": float(row[5]) if row[5] else None,
+                        "processing_time_ms": row[6],
+                        "status_code": row[7],
+                        "error_message": row[8]
+                    })
+                
+                return results
+                
+        except Exception as e:
+            logger.error(f"Failed to get prediction logs: {e}")
+            return []
+
+    def get_prediction_count(self, hours: int = 24, endpoint: str = None, 
+                           min_price: float = None, max_price: float = None) -> int:
+        """Get total count of predictions matching filters"""
+        
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                
+                query = """
+                    SELECT COUNT(*) FROM prediction_requests
+                    WHERE datetime(timestamp) > datetime('now', '-{} hours')
+                """.format(hours)
+                
+                params = []
+                
+                if endpoint:
+                    query += " AND endpoint = ?"
+                    params.append(endpoint)
+                
+                if min_price is not None:
+                    query += " AND CAST(prediction as REAL) >= ?"
+                    params.append(min_price)
+                
+                if max_price is not None:
+                    query += " AND CAST(prediction as REAL) <= ?"
+                    params.append(max_price)
+                
+                cursor.execute(query, params)
+                return cursor.fetchone()[0]
+                
+        except Exception as e:
+            logger.error(f"Failed to get prediction count: {e}")
+            return 0
+
+    def get_hourly_prediction_stats(self, hours: int = 24) -> List[Dict[str, Any]]:
+        """Get prediction statistics broken down by hour"""
+        
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                
+                cursor.execute("""
+                    SELECT 
+                        strftime('%Y-%m-%d %H:00:00', timestamp) as hour,
+                        COUNT(*) as prediction_count,
+                        AVG(CAST(prediction as REAL)) as avg_prediction,
+                        MIN(CAST(prediction as REAL)) as min_prediction,
+                        MAX(CAST(prediction as REAL)) as max_prediction,
+                        AVG(processing_time_ms) as avg_processing_time
+                    FROM prediction_requests
+                    WHERE datetime(timestamp) > datetime('now', '-{} hours')
+                    AND prediction IS NOT NULL
+                    GROUP BY strftime('%Y-%m-%d %H:00:00', timestamp)
+                    ORDER BY hour DESC
+                """.format(hours))
+                
+                results = []
+                for row in cursor.fetchall():
+                    results.append({
+                        "hour": row[0],
+                        "prediction_count": row[1],
+                        "avg_prediction": round(row[2], 2) if row[2] else None,
+                        "min_prediction": round(row[3], 2) if row[3] else None,
+                        "max_prediction": round(row[4], 2) if row[4] else None,
+                        "avg_processing_time_ms": round(row[5], 2) if row[5] else None
+                    })
+                
+                return results
+                
+        except Exception as e:
+            logger.error(f"Failed to get hourly prediction stats: {e}")
+            return []
+
+    def search_predictions(self, search_criteria: Dict[str, Any], 
+                         limit: int = 20) -> List[Dict[str, Any]]:
+        """Search predictions by input criteria"""
+        
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                
+                # Build search query
+                query = """
+                    SELECT id, timestamp, endpoint, input_data, prediction, 
+                           processing_time_ms
+                    FROM prediction_requests
+                    WHERE prediction IS NOT NULL
+                """
+                
+                params = []
+                
+                # Add search criteria
+                for field, value in search_criteria.items():
+                    if isinstance(value, str):
+                        query += f" AND json_extract(input_data, '$.{field}') = ?"
+                    else:
+                        query += f" AND CAST(json_extract(input_data, '$.{field}') as REAL) = ?"
+                    params.append(value)
+                
+                query += " ORDER BY timestamp DESC LIMIT ?"
+                params.append(limit)
+                
+                cursor.execute(query, params)
+                
+                results = []
+                for row in cursor.fetchall():
+                    # Parse input data JSON
+                    input_data = {}
+                    try:
+                        input_data = json.loads(row[3]) if row[3] else {}
+                    except:
+                        pass
+                    
+                    results.append({
+                        "id": row[0],
+                        "timestamp": row[1],
+                        "endpoint": row[2],
+                        "input_data": input_data,
+                        "prediction": float(row[4]) if row[4] else None,
+                        "processing_time_ms": row[5]
+                    })
+                
+                return results
+                
+        except Exception as e:
+            logger.error(f"Failed to search predictions: {e}")
+            return []
