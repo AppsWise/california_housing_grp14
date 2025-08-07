@@ -11,8 +11,30 @@
 | 3 | JEETENDRA KUMAR CHOUDHARY| 2023AC05554 | 100%         |
 | 4 | SRIKANTH V GOUTHAM       | 2023AC05228 | 100%         |
 
-## Project Overview
+## Demo Video
 
+**Complete Project Walkthrough and Demonstration**
+
+Due to size constraints on the assignment portal (Taxila), the demonstration video is hosted externally:
+
+[![California Housing MLOps Pipeline Demo](https://img.shields.io/badge/_Demo_Video-Watch_Now-red?style=for-the-badge&logo=youtube&logoColor=white)](https://drive.google.com/file/d/1ZYEPZVYKD0NM9EBZ7NNDNX2XI7GMGXPV/view?usp=sharing)
+
+### Video Details
+- ** Direct Link**: [California Housing MLOps Pipeline - Complete Demo](https://drive.google.com/file/d/1ZYEPZVYKD0NM9EBZ7NNDNX2XI7GMGXPV/view?usp=sharing)
+- **Duration**: 5-minute comprehensive walkthrough
+- **Coverage**: All assignment parts and bonus features demonstrated
+- **Platform**: Google Drive (due to Taxila portal size constraints)
+
+### What's Covered in the Demo
+-  Complete system architecture walkthrough
+-  Live API demonstration with prediction requests
+-  Monitoring dashboard (Prometheus + Grafana) in action
+-  Docker deployment process
+-  CI/CD pipeline execution
+-  MLflow experiment tracking demonstration
+-  All bonus features showcased
+
+## Project Overview
 This project implements a complete MLOps pipeline for California Housing price prediction using machine learning best practices. The system includes model training, experiment tracking, API deployment, containerization, CI/CD, and comprehensive monitoring.
 
 ## Assignment Requirements Completion
@@ -437,6 +459,28 @@ You have been tasked with building a minimal but complete MLOps pipeline for an 
 **Bonus Features**: 4/4 marks  
 **Total**: **28/28 marks**
 
+## Deliverables
+
+### Project Repository
+- **GitHub Repository**: https://github.com/jeetendra-choudhary/california_housing_grp14
+- **Complete source code with clean structure**
+- **All configuration files and documentation**
+
+### Docker Image
+- **Docker Hub**: Available for deployment
+- **Multi-stage optimized builds**
+- **Production-ready containerization**
+
+### Documentation
+- **Comprehensive README**: Complete project documentation with step-by-step instructions
+- **Technical Architecture**: Detailed system design and component interactions
+- **API Documentation**: Complete endpoint documentation with examples
+
+### Demonstration Video
+- **Recording Link**: [California Housing MLOps Pipeline - Complete Demo](https://drive.google.com/file/d/1ZYEPZVYKD0NM9EBZ7NNDNX2XI7GMGXPV/view?usp=sharing)
+- **Duration**: 5-minute comprehensive walkthrough
+- **Coverage**: All assignment parts and bonus features demonstrated
+- **Note**: Due to size constraints, hosted externally rather than submitted to assignment portal (Taxila)
 ## License and Acknowledgments
 
 ### Dataset
