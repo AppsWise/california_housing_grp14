@@ -17,10 +17,10 @@
 
 Due to size constraints on the assignment portal (Taxila), the demonstration video is hosted externally:
 
-[![California Housing MLOps Pipeline Demo](https://img.shields.io/badge/_Demo_Video-Watch_Now-red?style=for-the-badge&logo=youtube&logoColor=white)](https://drive.google.com/file/d/1ZYEPZVYKD0NM9EBZ7NNDNX2XI7GMGXPV/view?usp=sharing)
+[![California Housing MLOps Pipeline Demo](https://img.shields.io/badge/_Demo_Video-Watch_Now-red?style=for-the-badge&logo=youtube&logoColor=white)](https://drive.google.com/file/d/1ZYePZvYkd0nm9EbZ7NNdnx2Xi7GmGxpv/view?usp=drive_link)
 
 ### Video Details
-- ** Direct Link**: [California Housing MLOps Pipeline - Complete Demo](https://drive.google.com/file/d/1ZYEPZVYKD0NM9EBZ7NNDNX2XI7GMGXPV/view?usp=sharing)
+- ** Direct Link**: [California Housing MLOps Pipeline - Complete Demo](https://drive.google.com/file/d/1ZYePZvYkd0nm9EbZ7NNdnx2Xi7GmGxpv/view?usp=drive_link)
 - **Duration**: 5-minute comprehensive walkthrough
 - **Coverage**: All assignment parts and bonus features demonstrated
 - **Platform**: Google Drive (due to Taxila portal size constraints)
@@ -477,7 +477,7 @@ You have been tasked with building a minimal but complete MLOps pipeline for an 
 - **API Documentation**: Complete endpoint documentation with examples
 
 ### Demonstration Video
-- **Recording Link**: [California Housing MLOps Pipeline - Complete Demo](https://drive.google.com/file/d/1ZYEPZVYKD0NM9EBZ7NNDNX2XI7GMGXPV/view?usp=sharing)
+- **Recording Link**: [California Housing MLOps Pipeline - Complete Demo](https://drive.google.com/file/d/1ZYePZvYkd0nm9EbZ7NNdnx2Xi7GmGxpv/view?usp=drive_link)
 - **Duration**: 5-minute comprehensive walkthrough
 - **Coverage**: All assignment parts and bonus features demonstrated
 - **Note**: Due to size constraints, hosted externally rather than submitted to assignment portal (Taxila)
