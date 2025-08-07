@@ -33,7 +33,7 @@ from src.utils.monitoring import (
     performance_monitor,
 )
 from src.utils.database import PredictionDatabase
-from mlflow_integration import log_prediction_to_mlflow
+from src.utils.mlflow_integration import log_prediction_to_mlflow
 from src.utils.mlflow_tracking import (
     get_model_registry,
     get_experiment_tracker,

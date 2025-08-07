@@ -1,7 +1,0 @@
-Traceback (most recent call last):
-  File "/Volumes/Development/Development/assignment/MLOps_ASS1/src/app.py", line 21, in <module>
-    from src.api.app import app
-  File "/Volumes/Development/Development/assignment/MLOps_ASS1/src/api/app.py", line 43
-    )
-    ^
-SyntaxError: unmatched ')'
