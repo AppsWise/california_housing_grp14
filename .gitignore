@@ -21,4 +21,3 @@ mlruns_local/
 docs/
 .pytest_cache/
 __pycache__/
-tests/
