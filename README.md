@@ -221,6 +221,8 @@ california_housing_grp14/
 
 ### Option 2: Docker Deployment
 
+**Pre-built Image Available**: https://hub.docker.com/r/svgreatest/california-housing-api
+
 1. **Build Docker Image**
    ```bash
    docker build -t california-housing-api .
@@ -230,6 +232,11 @@ california_housing_grp14/
    ```bash
    docker run -p 5001:5001 california-housing-api
    ```
+
+**OR use pre-built image:**
+```bash
+docker run -p 5001:5001 svgreatest/california-housing-api:latest
+```
 
 ### Option 3: Full Stack with Monitoring
 
@@ -467,7 +474,8 @@ You have been tasked with building a minimal but complete MLOps pipeline for an 
 - **All configuration files and documentation**
 
 ### Docker Image
-- **Docker Hub**: Available for deployment
+- **Docker Hub Repository**: https://hub.docker.com/r/svgreatest/california-housing-api
+- **Image Name**: svgreatest/california-housing-api
 - **Multi-stage optimized builds**
 - **Production-ready containerization**
 
